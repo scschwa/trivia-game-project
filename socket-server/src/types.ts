@@ -38,6 +38,7 @@ export interface TeamWithRank {
   rank: number;
   roundScores: Record<number, number>;
   isConnected: boolean;
+  isReady?: boolean;
 }
 
 export interface LeaderboardEntry {
@@ -52,14 +53,18 @@ export interface GameState {
   sessionId: string;
   gameCode: string;
   status: GameStatus;
+  phase?: 'lobby' | 'reading_delay' | 'answering' | 'paused' | 'round_scored' | 'finished'; // lowercase phase for client
   currentRound: number;
   currentQuestion: number;
+  currentRoundIndex?: number; // 0-indexed for client
+  currentQuestionIndex?: number; // 0-indexed for client
   totalRounds: number;
   totalQuestions: number;
   currentQuestionData: Question | null;
   timer: TimerState;
   teams: TeamWithRank[];
   scoredRounds: number[];
+  questions?: Record<number, Question[]>; // Questions grouped by round
 }
 
 export interface RoundScoringResult {
@@ -112,6 +117,7 @@ export interface ServerToClientEvents {
   RECONNECT_SUCCESS: (data: {
     teamId: string;
     teamName: string;
+    isReady?: boolean;
     gameState: GameState;
   }) => void;
   RECONNECT_ERROR: (data: { message: string }) => void;

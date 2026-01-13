@@ -234,6 +234,27 @@ export async function buildGameState(gameSessionId: string): Promise<GameState |
     (q) => q.roundNumber === session.currentRound && q.questionNumber === session.currentQuestion
   ) || null;
   
+  // Group questions by round number
+  const questionsByRound: Record<number, Question[]> = {};
+  for (const q of questions) {
+    if (!questionsByRound[q.roundNumber]) {
+      questionsByRound[q.roundNumber] = [];
+    }
+    questionsByRound[q.roundNumber].push(q);
+  }
+  
+  // Map status to phase
+  type GamePhase = 'lobby' | 'reading_delay' | 'answering' | 'paused' | 'round_scored' | 'finished';
+  const statusToPhase: Record<string, GamePhase> = {
+    'LOBBY': 'lobby',
+    'READING_DELAY': 'reading_delay',
+    'ANSWERING': 'answering',
+    'PAUSED': 'paused',
+    'ROUND_SCORED': 'round_scored',
+    'FINISHED': 'finished',
+  };
+  const phase: GamePhase = statusToPhase[session.status] || 'lobby';
+  
   // Calculate team rankings
   const teamsWithScores = session.teams.map((team) => {
     const roundScores: Record<number, number> = JSON.parse(team.roundScoresJson || '{}');
@@ -243,6 +264,7 @@ export async function buildGameState(gameSessionId: string): Promise<GameState |
       totalScore: team.totalScore,
       roundScores,
       isConnected: team.isConnected,
+      isReady: team.isReady,
       score: team.totalScore, // For ranking calculation
     };
   });
@@ -269,6 +291,7 @@ export async function buildGameState(gameSessionId: string): Promise<GameState |
       rank: currentRank,
       roundScores: team.roundScores,
       isConnected: team.isConnected,
+      isReady: team.isReady,
     };
   });
   
@@ -287,13 +310,17 @@ export async function buildGameState(gameSessionId: string): Promise<GameState |
     sessionId: session.id,
     gameCode: session.gameCode,
     status: session.status as GameStatus,
+    phase,
     currentRound: session.currentRound,
+    currentRoundIndex: session.currentRound - 1, // 0-indexed for client
     currentQuestion: session.currentQuestion,
+    currentQuestionIndex: session.currentQuestion - 1, // 0-indexed for client
     totalRounds: session.triviaConfig.totalRounds,
     totalQuestions: session.triviaConfig.totalQuestions,
     currentQuestionData: currentQuestion,
     timer: calculateTimerState(session),
     teams: teamsWithRanks,
+    questions: questionsByRound,
     scoredRounds,
   };
 }

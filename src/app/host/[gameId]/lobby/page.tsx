@@ -50,6 +50,7 @@ export default function HostLobbyPage() {
             rank: prev.teams.length + 1,
             roundScores: {},
             isConnected: true,
+            isReady: false,
           }],
         };
       });

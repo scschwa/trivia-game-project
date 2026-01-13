@@ -69,8 +69,8 @@ export interface LeaderboardEntry {
 export interface TimerState {
   phase: 'waiting' | 'reading' | 'answering' | 'paused' | 'ended';
   remainingMs: number;
-  totalDuration: number;
-  totalMs?: number; // alias
+  totalMs: number;
+  totalDuration?: number; // alias for backwards compatibility
   endsAt: number | null;
   startedAt?: number;
   pausedAt?: number;

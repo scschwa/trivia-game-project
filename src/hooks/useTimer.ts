@@ -10,9 +10,11 @@ import { TimerState } from '@/types';
 interface UseTimerReturn {
   remainingMs: number;
   remainingSeconds: number;
+  remainingTime: number; // Alias for remainingSeconds (for backwards compatibility)
   progress: number; // 0 to 1
   phase: TimerState['phase'];
   isExpired: boolean;
+  isRunning: boolean; // True if timer is actively counting down
   formattedTime: string;
 }
 
@@ -51,6 +53,7 @@ export function useTimer(timerState: TimerState | null): UseTimerReturn {
   const progress = totalMs > 0 ? Math.max(0, Math.min(1, remainingMs / totalMs)) : 0;
   const phase = timerState?.phase || 'waiting';
   const isExpired = remainingMs <= 0 && phase !== 'waiting';
+  const isRunning = phase === 'reading' || phase === 'answering';
   
   // Format time as seconds or MM:SS
   const formatTime = useCallback((ms: number): string => {
@@ -67,9 +70,11 @@ export function useTimer(timerState: TimerState | null): UseTimerReturn {
   return {
     remainingMs,
     remainingSeconds,
+    remainingTime: remainingSeconds, // Alias
     progress,
     phase,
     isExpired,
+    isRunning,
     formattedTime: formatTime(remainingMs),
   };
 }

@@ -131,6 +131,7 @@ io.on('connection', (socket: Socket<ClientToServerEvents, ServerToClientEvents, 
           socket.emit('RECONNECT_SUCCESS', {
             teamId: existingTeam.id,
             teamName: existingTeam.name,
+            isReady: existingTeam.isReady,
             gameState: gameState!,
           });
           

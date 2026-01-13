@@ -63,34 +63,34 @@ export default function HostPresenterPage() {
       setGameState(data.gameState);
       setShowLeaderboard(false);
     },
-    onQuestionStart: (data: { 
-      roundIndex: number; 
-      questionIndex: number;
+    onQuestionRevealed: (data: { 
+      roundNumber: number; 
+      questionNumber: number;
       question: Question;
-      timerState: TimerState;
+      timer: TimerState;
     }) => {
       setGameState((prev) => {
         if (!prev) return prev;
         return {
           ...prev,
-          currentRoundIndex: data.roundIndex,
-          currentQuestionIndex: data.questionIndex,
+          currentRoundIndex: data.roundNumber - 1,
+          currentQuestionIndex: data.questionNumber - 1,
           currentQuestion: data.question,
           phase: 'reading_delay',
         };
       });
-      setTimerState(data.timerState);
+      setTimerState(data.timer);
       setShowLeaderboard(false);
     },
-    onAnsweringStart: (data: { timerState: TimerState }) => {
+    onAnsweringStarted: (data: { timer: TimerState }) => {
       setGameState((prev) => {
         if (!prev) return prev;
         return { ...prev, phase: 'answering' };
       });
-      setTimerState(data.timerState);
+      setTimerState(data.timer);
     },
-    onTimerUpdate: (data: { timerState: TimerState }) => {
-      setTimerState(data.timerState);
+    onTimerSync: (data: TimerState) => {
+      setTimerState(data);
     },
     onAnswerReceived: (data: { teamId: string }) => {
       // Update UI to show team answered
@@ -121,8 +121,8 @@ export default function HostPresenterPage() {
         return { ...prev, phase: 'paused' };
       });
     },
-    onGameResumed: (data: { timerState: TimerState }) => {
-      setTimerState(data.timerState);
+    onGameResumed: (data: { timer: TimerState }) => {
+      setTimerState(data.timer);
       setGameState((prev) => {
         if (!prev) return prev;
         return { ...prev, phase: 'answering' };
@@ -487,9 +487,7 @@ export default function HostPresenterPage() {
           <div className="flex items-center gap-4">
             {timerState && !showLeaderboard && !isPaused && !isReadingDelay && (
               <TimerDisplay
-                remainingTime={remainingTime}
-                totalTime={timerState.totalDuration}
-                isRunning={isRunning}
+                timerState={timerState}
                 size="md"
               />
             )}

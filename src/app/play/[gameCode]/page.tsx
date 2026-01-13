@@ -70,11 +70,13 @@ export default function TeamPlayPage() {
     }) => {
       setTeamId(data.teamId);
       setDisplayName(data.teamName);
+      setTeamName(data.teamName); // Pre-fill the team name for editing
       setReconnectToken(data.reconnectToken);
       setGameState(data.gameState);
       localStorage.setItem(`trivia_token_${gameCode}`, data.reconnectToken);
       
-      if (data.gameState.phase === 'lobby') {
+      // Check for LOBBY status (server sends uppercase status, not lowercase phase)
+      if (data.gameState.status === 'LOBBY') {
         setPhase('naming');
       } else {
         setPhase('playing');
@@ -88,16 +90,25 @@ export default function TeamPlayPage() {
     onReconnectSuccess: (data: {
       teamId: string;
       teamName: string;
+      isReady?: boolean;
       gameState: GameState;
     }) => {
       setTeamId(data.teamId);
       setDisplayName(data.teamName);
+      setTeamName(data.teamName); // Pre-fill the team name for editing
       setGameState(data.gameState);
-      setIsReady(true);
       
-      if (data.gameState.phase === 'lobby') {
-        setPhase('ready');
+      // Check for LOBBY status (server sends uppercase status, not lowercase phase)
+      if (data.gameState.status === 'LOBBY') {
+        // Only go to 'ready' phase if team was already ready, otherwise show naming
+        if (data.isReady) {
+          setIsReady(true);
+          setPhase('ready');
+        } else {
+          setPhase('naming');
+        }
       } else {
+        setIsReady(true);
         setPhase('playing');
         // Check if we already answered current question
         checkCurrentAnswer(data.teamId, data.gameState);
@@ -110,23 +121,26 @@ export default function TeamPlayPage() {
       setReconnectToken('');
       setError(data.message);
     },
-    onReadyConfirmed: () => {
-      setIsReady(true);
-      setPhase('ready');
+    onTeamReady: (data: { teamId: string }) => {
+      // Check if this is our team
+      if (data.teamId === teamId) {
+        setIsReady(true);
+        setPhase('ready');
+      }
     },
     onGameStarted: (data: { gameState: GameState }) => {
       setGameState(data.gameState);
       setPhase('playing');
     },
-    onQuestionStart: (data: { 
-      roundIndex: number; 
-      questionIndex: number;
+    onQuestionRevealed: (data: { 
+      roundNumber: number; 
+      questionNumber: number;
       question: Question;
-      timerState: TimerState;
+      timer: TimerState;
     }) => {
       // Only show question text, not options during reading delay
       setCurrentQuestion(data.question);
-      setTimerState(data.timerState);
+      setTimerState(data.timer);
       setSelectedAnswer(null);
       setHasSubmitted(false);
       setAnswerResult(null);
@@ -134,25 +148,28 @@ export default function TeamPlayPage() {
         if (!prev) return prev;
         return {
           ...prev,
-          currentRoundIndex: data.roundIndex,
-          currentQuestionIndex: data.questionIndex,
+          currentRoundIndex: data.roundNumber - 1,
+          currentQuestionIndex: data.questionNumber - 1,
           phase: 'reading_delay',
         };
       });
     },
-    onAnsweringStart: (data: { timerState: TimerState }) => {
-      setTimerState(data.timerState);
+    onAnsweringStarted: (data: { timer: TimerState }) => {
+      setTimerState(data.timer);
       setGameState((prev) => {
         if (!prev) return prev;
         return { ...prev, phase: 'answering' };
       });
     },
-    onTimerUpdate: (data: { timerState: TimerState }) => {
-      setTimerState(data.timerState);
+    onTimerSync: (data: TimerState) => {
+      setTimerState(data);
     },
-    onAnswerConfirmed: (data: { answer: AnswerOption }) => {
-      setSelectedAnswer(data.answer);
-      setHasSubmitted(true);
+    onAnswerConfirmed: (data: { teamId: string; roundNumber: number; questionNumber: number; selectedAnswer: 'A' | 'B' | 'C' | 'D' }) => {
+      // Only process if this is our team's answer confirmation
+      if (data.teamId === teamId) {
+        setSelectedAnswer(data.selectedAnswer);
+        setHasSubmitted(true);
+      }
     },
     onAnswerResult: (data: { correct: boolean; points: number; totalScore: number }) => {
       setAnswerResult({ correct: data.correct, points: data.points });
@@ -185,8 +202,8 @@ export default function TeamPlayPage() {
         return { ...prev, phase: 'paused' };
       });
     },
-    onGameResumed: (data: { timerState: TimerState }) => {
-      setTimerState(data.timerState);
+    onGameResumed: (data: { timer: TimerState }) => {
+      setTimerState(data.timer);
       setGameState((prev) => {
         if (!prev) return prev;
         return { ...prev, phase: 'answering' };
@@ -207,8 +224,8 @@ export default function TeamPlayPage() {
   const { 
     joinGame, 
     reconnect,
-    teamReady, 
-    teamRename,
+    setTeamReady, 
+    renameTeam,
     submitAnswer,
     isConnected 
   } = useSocket(socketHandlers);
@@ -243,11 +260,11 @@ export default function TeamPlayPage() {
     }
     
     if (teamName !== displayName) {
-      teamRename(gameCode, teamId, teamName.trim());
+      renameTeam(teamId, teamName.trim());
       setDisplayName(teamName.trim());
     }
     
-    teamReady(gameCode, teamId);
+    setTeamReady(teamId);
   };
   
   const handleSelectAnswer = (answer: AnswerOption) => {
@@ -258,13 +275,15 @@ export default function TeamPlayPage() {
   const handleSubmitAnswer = () => {
     if (!selectedAnswer || hasSubmitted || gameState?.phase !== 'answering') return;
     
-    submitAnswer(
-      gameCode, 
-      teamId, 
-      gameState?.currentRoundIndex ?? 0,
-      gameState?.currentQuestionIndex ?? 0,
-      selectedAnswer
-    );
+    const responseTimeMs = timerState ? (timerState.totalMs || 30000) - timerState.remainingMs : 0;
+    
+    submitAnswer({
+      teamId,
+      roundNumber: (gameState?.currentRoundIndex ?? 0) + 1,
+      questionNumber: (gameState?.currentQuestionIndex ?? 0) + 1,
+      selectedAnswer,
+      responseTimeMs,
+    });
   };
   
   const isPaused = gameState?.phase === 'paused';
@@ -434,9 +453,7 @@ export default function TeamPlayPage() {
           {isAnswering && (
             <div className="flex justify-center mb-4">
               <TimerDisplay
-                remainingTime={remainingTime}
-                totalTime={timerState?.totalDuration ?? 30}
-                isRunning={isRunning}
+                timerState={timerState}
                 size="md"
               />
             </div>
@@ -479,10 +496,10 @@ export default function TeamPlayPage() {
               <div className="flex-1 flex flex-col justify-center">
                 <AnswerButtons
                   options={{
-                    A: currentQuestion.optionA,
-                    B: currentQuestion.optionB,
-                    C: currentQuestion.optionC,
-                    D: currentQuestion.optionD,
+                    A: currentQuestion.answerA,
+                    B: currentQuestion.answerB,
+                    C: currentQuestion.answerC,
+                    D: currentQuestion.answerD,
                   }}
                   selectedAnswer={selectedAnswer}
                   onSelect={handleSelectAnswer}
