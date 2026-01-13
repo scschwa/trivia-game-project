@@ -495,16 +495,10 @@ export default function TeamPlayPage() {
             <div className="flex-1 flex flex-col">
               <div className="flex-1 flex flex-col justify-center">
                 <AnswerButtons
-                  options={{
-                    A: currentQuestion.answerA,
-                    B: currentQuestion.answerB,
-                    C: currentQuestion.answerC,
-                    D: currentQuestion.answerD,
-                  }}
+                  question={currentQuestion}
                   selectedAnswer={selectedAnswer}
                   onSelect={handleSelectAnswer}
                   disabled={!isAnswering}
-                  showText={false}
                 />
               </div>
               

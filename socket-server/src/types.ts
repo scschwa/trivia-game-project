@@ -55,12 +55,13 @@ export interface GameState {
   status: GameStatus;
   phase?: 'lobby' | 'reading_delay' | 'answering' | 'paused' | 'round_scored' | 'finished'; // lowercase phase for client
   currentRound: number;
-  currentQuestion: number;
+  currentQuestionNumber?: number; // The question number (1-indexed)
   currentRoundIndex?: number; // 0-indexed for client
   currentQuestionIndex?: number; // 0-indexed for client
+  currentQuestion?: Question | null; // The actual Question object
+  currentQuestionData?: Question | null; // Alias for backwards compatibility
   totalRounds: number;
   totalQuestions: number;
-  currentQuestionData: Question | null;
   timer: TimerState;
   teams: TeamWithRank[];
   scoredRounds: number[];
@@ -69,6 +70,7 @@ export interface GameState {
 
 export interface RoundScoringResult {
   roundNumber: number;
+  roundIndex?: number; // 0-indexed for client
   correctAnswers: Record<number, { correct: 'A' | 'B' | 'C' | 'D'; points: number }>;
   teamScores: {
     teamId: string;
@@ -79,6 +81,7 @@ export interface RoundScoringResult {
     answersTotal: number;
   }[];
   leaderboard: LeaderboardEntry[];
+  gameState?: GameState; // Updated game state after scoring
 }
 
 // Socket event interfaces

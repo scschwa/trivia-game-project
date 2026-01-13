@@ -113,6 +113,7 @@ export function useSocket(handlers: SocketEventHandlers = {}): UseSocketReturn {
     socketInstance.on('QUESTION_ENDED', (data) => handlersRef.current.onQuestionEnded?.(data));
     socketInstance.on('ANSWER_CONFIRMED', (data) => handlersRef.current.onAnswerConfirmed?.(data));
     socketInstance.on('ANSWER_ERROR', (data) => handlersRef.current.onAnswerError?.(data));
+    socketInstance.on('ANSWER_SUBMITTED', (data) => handlersRef.current.onAnswerReceived?.(data));
     socketInstance.on('GAME_PAUSED', (data) => handlersRef.current.onGamePaused?.(data));
     socketInstance.on('GAME_RESUMED', (data) => handlersRef.current.onGameResumed?.(data));
     socketInstance.on('ROUND_SCORED', (data) => handlersRef.current.onRoundScored?.(data));

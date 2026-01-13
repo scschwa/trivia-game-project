@@ -735,12 +735,15 @@ io.on('connection', (socket: Socket<ClientToServerEvents, ServerToClientEvents, 
       });
       
       const leaderboard = buildLeaderboard(updatedTeams);
+      const gameState = await buildGameState(gameSessionId);
       
       io.to(`game:${session.gameCode}`).emit('ROUND_SCORED', {
         roundNumber,
+        roundIndex: roundNumber - 1,
         correctAnswers,
         teamScores,
         leaderboard,
+        gameState: gameState ?? undefined,
       });
       
       if (isLastRound) {

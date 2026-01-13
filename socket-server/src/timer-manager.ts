@@ -313,11 +313,12 @@ export async function buildGameState(gameSessionId: string): Promise<GameState |
     phase,
     currentRound: session.currentRound,
     currentRoundIndex: session.currentRound - 1, // 0-indexed for client
-    currentQuestion: session.currentQuestion,
+    currentQuestionNumber: session.currentQuestion, // The question number (1-indexed)
     currentQuestionIndex: session.currentQuestion - 1, // 0-indexed for client
+    currentQuestion: currentQuestion, // The actual Question object
+    currentQuestionData: currentQuestion, // Alias for backwards compatibility
     totalRounds: session.triviaConfig.totalRounds,
     totalQuestions: session.triviaConfig.totalQuestions,
-    currentQuestionData: currentQuestion,
     timer: calculateTimerState(session),
     teams: teamsWithRanks,
     questions: questionsByRound,

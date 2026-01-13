@@ -77,6 +77,8 @@ export default function HostPresenterPage() {
           currentQuestionIndex: data.questionNumber - 1,
           currentQuestion: data.question,
           phase: 'reading_delay',
+          // Reset hasAnswered for all teams when new question starts
+          teams: prev.teams.map((t) => ({ ...t, hasAnswered: false })) as typeof prev.teams,
         };
       });
       setTimerState(data.timer);
@@ -204,7 +206,7 @@ export default function HostPresenterPage() {
         break;
       case 'KeyS':
         if (gameState.phase === 'round_scored' || remainingTime === 0) {
-          scoreRound(gameSessionId);
+          scoreRound(gameSessionId, (gameState?.currentRoundIndex ?? 0) + 1);
         }
         break;
       case 'KeyL':
@@ -391,7 +393,7 @@ export default function HostPresenterPage() {
           <div className="w-full max-w-5xl animate-fade-in">
             {/* Reading Delay Overlay */}
             {isReadingDelay && (
-              <div className="fixed inset-0 bg-gray-900/95 flex items-center justify-center z-30">
+              <div className="fixed inset-0 bg-gray-900 flex items-center justify-center z-30">
                 <div className="text-center animate-pulse">
                   <h2 className="text-5xl font-bold text-primary-400 mb-4">Get Ready!</h2>
                   <p className="text-2xl text-gray-400">Question coming up...</p>
@@ -457,7 +459,7 @@ export default function HostPresenterPage() {
             {remainingTime === 0 && !showLeaderboard && !isFinished && (
               <>
                 <button
-                  onClick={() => scoreRound(gameSessionId)}
+                  onClick={() => scoreRound(gameSessionId, (gameState?.currentRoundIndex ?? 0) + 1)}
                   className="px-4 py-2 bg-purple-600 hover:bg-purple-700 rounded-lg transition-colors flex items-center gap-2"
                 >
                   <Trophy className="w-5 h-5" />
