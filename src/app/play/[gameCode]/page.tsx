@@ -188,10 +188,10 @@ export default function TeamPlayPage() {
     },
     onRoundScored: (data: { 
       roundIndex: number; 
-      leaderboard: Array<{ id: string; rank: number; totalScore: number }>;
+      leaderboard: Array<{ teamId: string; id?: string; rank: number; totalScore: number }>;
     }) => {
-      // Find our rank
-      const myEntry = data.leaderboard.find((e) => e.id === teamId);
+      // Find our rank (server sends teamId, not id)
+      const myEntry = data.leaderboard.find((e) => e.teamId === teamId || e.id === teamId);
       if (myEntry) {
         setTotalScore(myEntry.totalScore);
       }
