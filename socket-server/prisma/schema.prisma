@@ -1,0 +1,140 @@
+// Prisma Schema for Trivia Game (Socket Server Copy)
+// This is a copy of ../prisma/schema.prisma for the socket server to generate its own client
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// Game Status Enum (stored as string for SQLite compatibility)
+// LOBBY - Waiting for teams to join
+// READING_DELAY - 15-second delay before answering starts
+// ANSWERING - Teams can submit answers
+// PAUSED - Timer frozen, no actions allowed
+// ROUND_SCORED - Round has been scored, showing leaderboard
+// FINISHED - Game completed
+
+model TriviaConfig {
+  id          String   @id @default(cuid())
+  name        String
+  description String?
+  
+  // Questions stored as JSON array
+  // Each question: { roundNumber, questionNumber, question, answerA, answerB, answerC, answerD, correctAnswer, points }
+  questionsJson String  // JSON string for SQLite compatibility
+  
+  totalRounds    Int
+  totalQuestions Int
+  
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  
+  gameSessions GameSession[]
+  
+  @@index([createdAt])
+}
+
+model GameSession {
+  id       String @id @default(cuid())
+  gameCode String @unique
+  
+  // Host authentication
+  hostPinHash String
+  
+  // Game state
+  status String @default("LOBBY") // GameStatus as string
+  
+  // Current position in the game
+  currentRound    Int @default(1)
+  currentQuestion Int @default(1)
+  
+  // Server-authoritative timing (Unix timestamps in milliseconds)
+  questionRevealedAt  BigInt? // When question was shown
+  answeringStartsAt   BigInt? // When 15s reading delay ends
+  questionEndsAt      BigInt? // When answering period ends
+  pausedAt            BigInt? // When game was paused (null if not paused)
+  remainingTimeOnPause Int?   // Milliseconds remaining when paused
+  
+  // Timing configuration (milliseconds)
+  readingDelayMs  Int @default(15000)  // 15 seconds
+  answeringTimeMs Int @default(30000)  // 30 seconds
+  
+  // Reference to trivia config
+  triviaConfigId String
+  triviaConfig   TriviaConfig @relation(fields: [triviaConfigId], references: [id])
+  
+  // Relationships
+  teams   Team[]
+  answers Answer[]
+  
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  completedAt DateTime?
+  
+  @@index([gameCode])
+  @@index([status])
+  @@index([createdAt])
+}
+
+model Team {
+  id            String @id @default(cuid())
+  gameSessionId String
+  gameSession   GameSession @relation(fields: [gameSessionId], references: [id], onDelete: Cascade)
+  
+  // Team info
+  name       String
+  joinOrder  Int      // 1, 2, 3... based on join order
+  isReady    Boolean  @default(false)
+  
+  // Scoring
+  totalScore Int @default(0)
+  
+  // Per-round scores stored as JSON: { "1": 10, "2": 15, ... }
+  roundScoresJson String @default("{}")
+  
+  // Reconnection support
+  reconnectToken String  @unique
+  lastSeenAt     DateTime @default(now())
+  isConnected    Boolean  @default(true)
+  
+  // Relationships
+  answers Answer[]
+  
+  createdAt DateTime @default(now())
+  
+  @@unique([gameSessionId, name])
+  @@unique([gameSessionId, joinOrder])
+  @@index([reconnectToken])
+  @@index([gameSessionId])
+}
+
+model Answer {
+  id            String @id @default(cuid())
+  teamId        String
+  team          Team   @relation(fields: [teamId], references: [id], onDelete: Cascade)
+  gameSessionId String
+  gameSession   GameSession @relation(fields: [gameSessionId], references: [id], onDelete: Cascade)
+  
+  // Question reference
+  roundNumber    Int
+  questionNumber Int
+  
+  // Answer data
+  selectedAnswer String  // A, B, C, or D
+  isCorrect      Boolean @default(false)
+  pointsAwarded  Int     @default(0)
+  
+  // Timing (for potential tiebreakers)
+  responseTimeMs Int // How long it took to answer
+  
+  // Immutability - once submitted, cannot change
+  submittedAt DateTime @default(now())
+  
+  @@unique([teamId, gameSessionId, roundNumber, questionNumber])
+  @@index([gameSessionId, roundNumber])
+  @@index([teamId])
+}

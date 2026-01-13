@@ -65,6 +65,9 @@ const config: Config = {
           '50%': { transform: 'scale(1.05)' },
         },
       },
+      scale: {
+        '98': '0.98',
+      },
     },
   },
   plugins: [],

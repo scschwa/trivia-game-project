@@ -1,0 +1,4 @@
+roundNumber, questionNumber, question, answerA, answerB, answerC, answerD, correctAnswer, points (optional)
+1,1,What is the capital of France?,London,Berlin,Paris,Madrid,C,10
+1,2,Which planet is known as the Red Planet?,Venus,Mars,Jupiter,Saturn,B,10
+2,1,Who painted the Mona Lisa?,Van Gogh,Da Vinci,Picasso,Rembrandt,B,20

@@ -129,10 +129,10 @@ Upload trivia questions in CSV format with these columns:
 
 Example:
 ```csv
-round,question,question_text,option_a,option_b,option_c,option_d,correct_answer,points,time_seconds
-1,1,What is the capital of France?,London,Berlin,Paris,Madrid,C,10,30
-1,2,Which planet is known as the Red Planet?,Venus,Mars,Jupiter,Saturn,B,10,30
-2,1,Who painted the Mona Lisa?,Van Gogh,Da Vinci,Picasso,Rembrandt,B,20,45
+roundNumber, questionNumber, question, answerA, answerB, answerC, answerD, correctAnswer, points (optional)
+1,1,What is the capital of France?,London,Berlin,Paris,Madrid,C,10
+1,2,Which planet is known as the Red Planet?,Venus,Mars,Jupiter,Saturn,B,10
+2,1,Who painted the Mona Lisa?,Van Gogh,Da Vinci,Picasso,Rembrandt,B,20
 ```
 
 ## Game Flow
