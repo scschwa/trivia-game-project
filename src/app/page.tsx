@@ -62,6 +62,7 @@ function JoinGameForm() {
 }
 
 export default function HomePage() {
+  return (
     <div className="min-h-screen bg-gradient-to-br from-primary-500 via-purple-500 to-pink-500">
       <div className="container mx-auto px-4 py-12">
         {/* Header */}
