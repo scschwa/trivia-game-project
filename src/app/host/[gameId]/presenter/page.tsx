@@ -571,7 +571,7 @@ export default function HostPresenterPage() {
         title="End Game?"
         message="Are you sure you want to end this game and view the final results?"
         confirmText="End Game"
-        confirmVariant="danger"
+        variant="danger"
       />
     </div>
   );
