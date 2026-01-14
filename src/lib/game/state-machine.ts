@@ -30,13 +30,13 @@ type TransitionGuard = (context: TransitionContext) => { allowed: boolean; reaso
 
 const transitionGuards: Partial<Record<`${GameStatus}->${GameStatus}`, TransitionGuard>> = {
   // Can only start game if at least one team is ready
-  [`${GameStatus.LOBBY}->${GameStatus.READING_DELAY}`]: (ctx) => ({
+  [`${GameStatus.LOBBY}->${GameStatus.READING_DELAY}`]: (ctx: TransitionContext) => ({
     allowed: ctx.teamsReady > 0,
     reason: ctx.teamsReady === 0 ? 'At least one team must be ready to start' : undefined,
   }),
   
   // Can only score round after last question in round
-  [`${GameStatus.ANSWERING}->${GameStatus.ROUND_SCORED}`]: (ctx) => ({
+  [`${GameStatus.ANSWERING}->${GameStatus.ROUND_SCORED}`]: (ctx: TransitionContext) => ({
     allowed: ctx.currentQuestion === ctx.questionsInCurrentRound,
     reason: ctx.currentQuestion !== ctx.questionsInCurrentRound 
       ? 'Can only score round after last question' 
@@ -44,7 +44,7 @@ const transitionGuards: Partial<Record<`${GameStatus}->${GameStatus}`, Transitio
   }),
   
   // Can only finish after last round is scored
-  [`${GameStatus.ROUND_SCORED}->${GameStatus.FINISHED}`]: (ctx) => ({
+  [`${GameStatus.ROUND_SCORED}->${GameStatus.FINISHED}`]: (ctx: TransitionContext) => ({
     allowed: ctx.currentRound === ctx.totalRounds,
     reason: ctx.currentRound !== ctx.totalRounds 
       ? 'Can only finish after last round' 
