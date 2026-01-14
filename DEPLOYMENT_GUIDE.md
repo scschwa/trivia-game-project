@@ -51,7 +51,8 @@ cd ..
 **Main app** - Create `.env.local` in the project root:
 
 ```env
-DATABASE_URL="file:./dev.db"
+# For local dev, use Supabase directly (or a local PostgreSQL)
+DATABASE_URL="postgresql://postgres:[PASSWORD]@db.xxxxx.supabase.co:5432/postgres"
 NEXT_PUBLIC_SOCKET_URL="http://localhost:3001"
 NEXT_PUBLIC_APP_URL="http://localhost:3000"
 JWT_SECRET="local-dev-secret-key-minimum-32-characters-long"
@@ -60,14 +61,14 @@ JWT_SECRET="local-dev-secret-key-minimum-32-characters-long"
 **Socket server** - Create `.env` in `socket-server/`:
 
 ```env
-# IMPORTANT: Use absolute path with file: prefix
-DATABASE_URL="file:C:/Users/svenftw/OneDrive/trivia-game-project/prisma/dev.db"
+# Use the same Supabase connection as main app
+DATABASE_URL="postgresql://postgres:[PASSWORD]@db.xxxxx.supabase.co:5432/postgres"
 PORT=3001
 CORS_ORIGIN="http://localhost:3000"
 JWT_SECRET="local-dev-secret-key-minimum-32-characters-long"
 ```
 
-> ⚠️ **Windows Users**: Use forward slashes `/` in the path, not backslashes `\`
+> 💡 **Note**: Both services use PostgreSQL. Set up Supabase first (see next section), then come back to complete local setup.
 
 ### Step 3: Initialize Database
 
@@ -75,7 +76,7 @@ JWT_SECRET="local-dev-secret-key-minimum-32-characters-long"
 # Generate Prisma client for main app
 npx prisma generate
 
-# Create the SQLite database
+# Create/update database tables (uses Supabase)
 npx prisma db push
 
 # Generate Prisma client for socket server

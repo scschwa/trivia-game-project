@@ -6,7 +6,7 @@ generator client {
 }
 
 datasource db {
-  provider = "sqlite"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
@@ -25,7 +25,7 @@ model TriviaConfig {
   
   // Questions stored as JSON array
   // Each question: { roundNumber, questionNumber, question, answerA, answerB, answerC, answerD, correctAnswer, points }
-  questionsJson String  // JSON string for SQLite compatibility
+  questionsJson String  // JSON string of questions array
   
   totalRounds    Int
   totalQuestions Int

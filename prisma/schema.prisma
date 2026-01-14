@@ -1,12 +1,12 @@
 // Prisma Schema for Trivia Game
-// Supports both PostgreSQL (production) and SQLite (local dev)
+// Uses PostgreSQL for both local dev and production
 
 generator client {
   provider = "prisma-client-js"
 }
 
 datasource db {
-  provider = "sqlite"
+  provider = "postgresql"
   url      = env("DATABASE_URL")
 }
 
@@ -25,7 +25,7 @@ model TriviaConfig {
   
   // Questions stored as JSON array
   // Each question: { roundNumber, questionNumber, question, answerA, answerB, answerC, answerD, correctAnswer, points }
-  questionsJson String  // JSON string for SQLite compatibility
+  questionsJson String  // JSON string of questions array
   
   totalRounds    Int
   totalQuestions Int
