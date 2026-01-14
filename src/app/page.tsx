@@ -1,11 +1,12 @@
 'use client';
 
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense } from 'react';
 import { useRouter, useSearchParams } from 'next/navigation';
 import Link from 'next/link';
 import { Gamepad2, Users, Trophy, Settings } from 'lucide-react';
 
-export default function HomePage() {
+// Separate component that uses useSearchParams
+function JoinGameForm() {
   const router = useRouter();
   const searchParams = useSearchParams();
   const [gameCode, setGameCode] = useState('');
@@ -31,8 +32,36 @@ export default function HomePage() {
     
     router.push(`/play/${normalizedCode}`);
   };
-  
+
   return (
+    <form onSubmit={handleJoin} className="space-y-4">
+      <div>
+        <label htmlFor="gameCode" className="label">
+          Enter Game Code
+        </label>
+        <input
+          type="text"
+          id="gameCode"
+          value={gameCode}
+          onChange={(e) => setGameCode(e.target.value.toUpperCase())}
+          placeholder="ABCDEF"
+          maxLength={6}
+          className="input-field text-center text-2xl font-mono tracking-widest uppercase"
+          autoComplete="off"
+        />
+        {error && (
+          <p className="text-red-500 text-sm mt-1">{error}</p>
+        )}
+      </div>
+      
+      <button type="submit" className="btn-primary w-full">
+        Join Game
+      </button>
+    </form>
+  );
+}
+
+export default function HomePage() {
     <div className="min-h-screen bg-gradient-to-br from-primary-500 via-purple-500 to-pink-500">
       <div className="container mx-auto px-4 py-12">
         {/* Header */}
@@ -57,30 +86,9 @@ export default function HomePage() {
               Join a Game
             </h2>
             
-            <form onSubmit={handleJoin} className="space-y-4">
-              <div>
-                <label htmlFor="gameCode" className="label">
-                  Enter Game Code
-                </label>
-                <input
-                  type="text"
-                  id="gameCode"
-                  value={gameCode}
-                  onChange={(e) => setGameCode(e.target.value.toUpperCase())}
-                  placeholder="ABCDEF"
-                  maxLength={6}
-                  className="input-field text-center text-2xl font-mono tracking-widest uppercase"
-                  autoComplete="off"
-                />
-                {error && (
-                  <p className="text-red-500 text-sm mt-1">{error}</p>
-                )}
-              </div>
-              
-              <button type="submit" className="btn-primary w-full">
-                Join Game
-              </button>
-            </form>
+            <Suspense fallback={<div className="text-center py-4">Loading...</div>}>
+              <JoinGameForm />
+            </Suspense>
           </div>
           
           {/* Host Options */}
