@@ -56,6 +56,7 @@ interface SocketEventHandlers {
   onQuestionEnded?: (data: { roundNumber: number; questionNumber: number }) => void;
   onAnswerConfirmed?: (data: { teamId: string; roundNumber: number; questionNumber: number; selectedAnswer: 'A' | 'B' | 'C' | 'D' }) => void;
   onAnswerError?: (data: { message: string }) => void;
+  onAnswerReceived?: (data: { teamId: string }) => void;
   onGamePaused?: (data: { pausedAt: number; remainingMs: number }) => void;
   onGameResumed?: (data: { timer: TimerState }) => void;
   onRoundScored?: (data: RoundScoringResult) => void;
