@@ -16,7 +16,7 @@ import { useTimer } from '@/hooks/useTimer';
 import { getTeamByToken, getTeamAnswerHistory, hasTeamAnswered } from '@/actions/team';
 import { TimerDisplay } from '@/components/game/TimerDisplay';
 import { AnswerButtons } from '@/components/game/AnswerButtons';
-import { GameState, Question, TimerState, AnswerOption } from '@/types';
+import { GameState, Question, TimerState, AnswerOption, RoundScoringResult } from '@/types';
 
 interface AnswerHistoryItem {
   round: number;
@@ -186,12 +186,9 @@ export default function TeamPlayPage() {
         }]);
       }
     },
-    onRoundScored: (data: { 
-      roundIndex: number; 
-      leaderboard: Array<{ teamId: string; id?: string; rank: number; totalScore: number }>;
-    }) => {
-      // Find our rank (server sends teamId, not id)
-      const myEntry = data.leaderboard.find((e) => e.teamId === teamId || e.id === teamId);
+    onRoundScored: (data: RoundScoringResult) => {
+      // Find our rank (check both id and teamId for compatibility)
+      const myEntry = data.leaderboard.find((e) => e.id === teamId || e.teamId === teamId);
       if (myEntry) {
         setTotalScore(myEntry.totalScore);
       }
