@@ -373,7 +373,8 @@ io.on('connection', (socket: Socket<ClientToServerEvents, ServerToClientEvents, 
       socket.emit('HOST_JOIN_SUCCESS', { gameState: gameState! });
       
     } catch (error) {
-      console.error('HOST_JOIN error:', error);
+      console.error('HOST_JOIN error:', error instanceof Error ? error.message : error);
+      console.error('HOST_JOIN stack:', error instanceof Error ? error.stack : 'No stack');
       socket.emit('HOST_JOIN_ERROR', { message: 'Failed to join as host' });
     }
   });
