@@ -134,7 +134,7 @@ export interface AnswerSubmission {
 // Scoring result for a round
 export interface RoundScoringResult {
   roundNumber: number;
-  roundIndex?: number; // 0-indexed for client
+  roundIndex: number; // 0-indexed for client
   correctAnswers: Record<number, { correct: 'A' | 'B' | 'C' | 'D'; points: number }>;
   teamScores: {
     teamId: string;
@@ -145,7 +145,7 @@ export interface RoundScoringResult {
     answersTotal: number;
   }[];
   leaderboard: LeaderboardEntry[];
-  gameState?: GameState; // Updated game state after scoring
+  gameState: GameState; // Updated game state after scoring
 }
 
 // Completed game for scoreboard
