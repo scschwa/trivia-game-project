@@ -135,9 +135,13 @@ export default function HostPresenterPage() {
     },
     onGameFinished: (data: { 
       finalLeaderboard: LeaderboardEntry[];
-      gameState: GameState;
+      gameState?: GameState;
     }) => {
-      setGameState(data.gameState);
+      if (data.gameState) {
+        setGameState(data.gameState);
+      } else {
+        setGameState(prev => prev ? { ...prev, phase: 'finished' } : prev);
+      }
       setLeaderboard(data.finalLeaderboard);
       setShowLeaderboard(true);
     },

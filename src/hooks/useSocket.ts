@@ -60,7 +60,7 @@ interface SocketEventHandlers {
   onGameResumed?: (data: { timer: TimerState }) => void;
   onRoundScored?: (data: RoundScoringResult) => void;
   onLeaderboardUpdate?: (data: { leaderboard: LeaderboardEntry[] }) => void;
-  onGameFinished?: (data: { finalLeaderboard: LeaderboardEntry[]; gameSessionId: string }) => void;
+  onGameFinished?: (data: { finalLeaderboard: LeaderboardEntry[]; gameSessionId: string; gameState?: GameState }) => void;
   onError?: (data: { message: string; code?: string }) => void;
 }
 

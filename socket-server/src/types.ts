@@ -155,7 +155,7 @@ export interface ServerToClientEvents {
   GAME_RESUMED: (data: { timer: TimerState }) => void;
   ROUND_SCORED: (data: RoundScoringResult) => void;
   LEADERBOARD_UPDATE: (data: { leaderboard: LeaderboardEntry[] }) => void;
-  GAME_FINISHED: (data: { finalLeaderboard: LeaderboardEntry[]; gameSessionId: string }) => void;
+  GAME_FINISHED: (data: { finalLeaderboard: LeaderboardEntry[]; gameSessionId: string; gameState?: GameState }) => void;
   ERROR: (data: { message: string; code?: string }) => void;
 }
 

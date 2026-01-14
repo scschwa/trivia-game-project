@@ -750,6 +750,7 @@ io.on('connection', (socket: Socket<ClientToServerEvents, ServerToClientEvents, 
         io.to(`game:${session.gameCode}`).emit('GAME_FINISHED', {
           finalLeaderboard: leaderboard,
           gameSessionId,
+          gameState: gameState ?? undefined,
         });
       }
       
