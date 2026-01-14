@@ -25,9 +25,10 @@ export function Leaderboard({
   // Sort entries by rank
   const sortedEntries = [...entries].sort((a, b) => a.rank - b.rank);
   
-  // Prepare chart data
+  // Prepare chart data - use "Team X - Name" format for chart labels
   const chartData = sortedEntries.map((entry, index) => ({
-    name: entry.name,
+    name: `Team ${index + 1} - ${entry.name}`,
+    teamName: entry.name,
     score: entry.totalScore,
     color: CHART_COLORS[index % CHART_COLORS.length],
   }));
@@ -98,7 +99,7 @@ export function Leaderboard({
                 {entry.name}
               </div>
               <div className="text-sm text-gray-500">
-                {formatRank(entry.rank)} place
+                {entry.totalScore} points
               </div>
             </div>
             

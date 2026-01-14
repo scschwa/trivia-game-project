@@ -341,7 +341,7 @@ export async function getGameResult(gameSessionId: string) {
     
     for (let r = 1; r <= session.triviaConfig.totalRounds; r++) {
       const roundQuestions = questionsByRound[r] || [];
-      const roundAnswers = session.answers.filter((a) => a.roundIndex === r - 1);
+      const roundAnswers = session.answers.filter((a) => a.roundNumber === r);
       const roundCorrect = roundAnswers.filter((a) => a.isCorrect).length;
       const correctRate = roundAnswers.length > 0 
         ? Math.round(roundCorrect / roundAnswers.length * 100) 

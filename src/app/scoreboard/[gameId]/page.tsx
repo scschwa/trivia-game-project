@@ -117,7 +117,7 @@ export default async function GameResultPage({ params }: PageProps) {
                     </div>
                     <div>
                       <p className="text-2xl font-bold text-primary-400">{round.avgScore}</p>
-                      <p className="text-xs text-white/60">Avg Score</p>
+                      <p className="text-xs text-white/60">Round Score</p>
                     </div>
                     <div>
                       <p className="text-2xl font-bold text-yellow-400">{round.topScorer}</p>

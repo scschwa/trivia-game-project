@@ -25,17 +25,27 @@ A production-ready live trivia game web application with real-time play, timers,
 ```
 trivia-game/
 ├── prisma/                    # Database schema
+│   └── schema.prisma
 ├── socket-server/             # Separate Socket.IO server
+│   ├── prisma/               # Copy of schema for socket server
+│   │   └── schema.prisma
 │   ├── src/
 │   │   ├── index.ts          # Express + Socket.IO setup
+│   │   ├── db.ts             # Prisma client
 │   │   ├── timer-manager.ts  # Game timers and state
 │   │   └── types.ts          # Shared types
+│   ├── .env                  # Socket server environment
 │   └── package.json
 ├── src/
 │   ├── actions/              # Server actions
 │   ├── app/                  # Next.js pages
+│   │   ├── host/            # Host pages (create, lobby, presenter)
+│   │   ├── play/            # Participant play page
+│   │   └── scoreboard/      # Results and history
 │   ├── components/           # React components
-│   ├── hooks/                # Custom hooks
+│   │   ├── game/            # Game components (Leaderboard, Timer, etc.)
+│   │   └── ui/              # UI components (Modal, QRCode, etc.)
+│   ├── hooks/                # Custom hooks (useSocket, useTimer)
 │   ├── lib/                  # Core libraries
 │   └── types/                # TypeScript types
 └── package.json
@@ -79,9 +89,10 @@ NEXT_PUBLIC_APP_URL="http://localhost:3000"
 JWT_SECRET="your-dev-secret-key-at-least-32-chars"
 ```
 
-Edit `socket-server/.env.local`:
+Edit `socket-server/.env`:
 ```env
-DATABASE_URL="../prisma/dev.db"
+# Use absolute path with file: prefix for SQLite
+DATABASE_URL="file:C:/path/to/your/trivia-game-project/prisma/dev.db"
 PORT=3001
 CORS_ORIGIN="http://localhost:3000"
 JWT_SECRET="your-dev-secret-key-at-least-32-chars"
@@ -90,7 +101,14 @@ JWT_SECRET="your-dev-secret-key-at-least-32-chars"
 3. **Initialize the database**
 
 ```bash
+# From the main project directory
+npx prisma generate
 npx prisma db push
+
+# Generate prisma client for socket server
+cd socket-server
+npx prisma generate
+cd ..
 ```
 
 4. **Start both servers**
@@ -116,16 +134,15 @@ Upload trivia questions in CSV format with these columns:
 
 | Column | Description | Required |
 |--------|-------------|----------|
-| round | Round number (sequential starting from 1) | Yes |
-| question | Question number within round (sequential from 1) | Yes |
-| question_text | The question to display | Yes |
-| option_a | Answer option A | Yes |
-| option_b | Answer option B | Yes |
-| option_c | Answer option C | Yes |
-| option_d | Answer option D | Yes |
-| correct_answer | Correct option (A, B, C, or D) | Yes |
+| roundNumber | Round number (sequential starting from 1) | Yes |
+| questionNumber | Question number within round (sequential from 1) | Yes |
+| question | The question to display | Yes |
+| answerA | Answer option A | Yes |
+| answerB | Answer option B | Yes |
+| answerC | Answer option C | Yes |
+| answerD | Answer option D | Yes |
+| correctAnswer | Correct option (A, B, C, or D) | Yes |
 | points | Points for correct answer (default: 10) | No |
-| time_seconds | Time to answer in seconds (default: 30) | No |
 
 Example:
 ```csv
@@ -141,11 +158,12 @@ roundNumber, questionNumber, question, answerA, answerB, answerC, answerD, corre
 2. **Teams**: Scan QR code or enter game code → Enter team name → Ready up
 3. **Host**: Start game when teams are ready
 4. **Game loop**:
-   - Reading delay (3 seconds) - question shown on presenter
-   - Answering period - teams submit answers on their devices
-   - Time up - show correct answer
-   - Next question or Score Round
-5. **End**: View final leaderboard and statistics
+   - Reading delay (15 seconds default) - "Get Ready!" screen with countdown
+   - Answering period (30 seconds default) - teams submit answers on their devices
+   - Time up - answer count displayed, host can score round or continue
+   - Score Round - shows leaderboard with team rankings
+   - Next Question or Finalize Scores (if last round)
+5. **End**: View final leaderboard with winner spotlight, round breakdown, and statistics
 
 ---
 
@@ -313,22 +331,34 @@ The Socket.IO server already includes basic in-memory rate limiting (10 events/s
 
 ### "Cannot connect to game server"
 
-- Check that the Socket.IO server is running
-- Verify `NEXT_PUBLIC_SOCKET_URL` is correct
+- Check that the Socket.IO server is running (`npm run dev` in socket-server/)
+- Verify `NEXT_PUBLIC_SOCKET_URL` is correct (http://localhost:3001 for local dev)
 - Check browser console for CORS errors
 - Ensure `CORS_ORIGIN` in socket server matches your app URL
 
-### "Database connection failed"
+### "Database connection failed" or Prisma errors
 
-- Verify `DATABASE_URL` is correct
+- Verify `DATABASE_URL` uses `file:` prefix with absolute path for SQLite
+- Run `npx prisma generate` in both main project AND socket-server directories
 - For Supabase, ensure you're using the connection string (not the API URL)
 - Check that your IP is allowed in Supabase network settings
+
+### Host shows "Connecting..." indefinitely
+
+- Make sure socket-server has its own `prisma/schema.prisma` file (copy from main project)
+- Run `npx prisma generate` in the socket-server directory
+- Check that DATABASE_URL in socket-server/.env uses absolute path
 
 ### Teams can't reconnect
 
 - Ensure `JWT_SECRET` is identical in both servers
 - Check that the reconnect token is stored in localStorage
 - Tokens expire after 24 hours
+
+### Scores showing 0 after scoring round
+
+- Make sure you're using the latest socket-server code
+- The scoreRound function requires both gameSessionId and roundNumber parameters
 
 ### Timer sync issues
 

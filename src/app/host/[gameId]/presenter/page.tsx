@@ -36,6 +36,7 @@ export default function HostPresenterPage() {
   const [showLeaderboard, setShowLeaderboard] = useState(false);
   const [showConfirmEnd, setShowConfirmEnd] = useState(false);
   const [showKeyboardHelp, setShowKeyboardHelp] = useState(false);
+  const [scoredRoundNumber, setScoredRoundNumber] = useState<number | null>(null);
   
   // Timer state
   const [timerState, setTimerState] = useState<TimerState | null>(null);
@@ -109,12 +110,14 @@ export default function HostPresenterPage() {
       });
     },
     onRoundScored: (data: { 
+      roundNumber: number;
       roundIndex: number; 
       leaderboard: LeaderboardEntry[];
       gameState: GameState;
     }) => {
       setGameState(data.gameState);
       setLeaderboard(data.leaderboard);
+      setScoredRoundNumber(data.roundNumber);
       setShowLeaderboard(true);
     },
     onGamePaused: () => {
@@ -255,9 +258,11 @@ export default function HostPresenterPage() {
   const isReadingDelay = gameState?.phase === 'reading_delay';
   const totalQuestions = gameState ? 
     Object.values(gameState.questions).reduce((sum, qs) => sum + qs.length, 0) : 0;
+  // currentRoundIndex is 0-indexed, but questions keys are 1-indexed round numbers
+  // So we need to compare against currentRoundIndex + 1 (the current round number)
   const currentQuestionNumber = gameState ?
     Object.entries(gameState.questions)
-      .filter(([r]) => parseInt(r) < (gameState.currentRoundIndex ?? 0))
+      .filter(([r]) => parseInt(r) < ((gameState.currentRoundIndex ?? 0) + 1))
       .reduce((sum, [, qs]) => sum + qs.length, 0) + ((gameState.currentQuestionIndex ?? 0) + 1) : 0;
   
   const answeredCount = gameState?.teams.filter((t) => (t as typeof t & { hasAnswered?: boolean }).hasAnswered).length ?? 0;
@@ -359,13 +364,13 @@ export default function HostPresenterPage() {
             <div className="text-center mb-8">
               <h2 className="text-4xl font-bold text-yellow-400 flex items-center justify-center gap-3">
                 <Trophy className="w-10 h-10" />
-                {isFinished ? 'Final Results' : `Round ${(gameState?.currentRoundIndex ?? 0) + 1} Results`}
+                {isFinished ? 'Final Results' : `Round ${scoredRoundNumber ?? ((gameState?.currentRoundIndex ?? 0) + 1)} Results`}
               </h2>
             </div>
             
             <Leaderboard entries={leaderboard} showChart />
             
-            {!isFinished && (
+            {!isFinished && scoredRoundNumber !== null && scoredRoundNumber < (gameState?.totalRounds ?? 0) && (
               <div className="mt-8 text-center">
                 <button
                   onClick={() => nextQuestion(gameSessionId)}
@@ -374,6 +379,19 @@ export default function HostPresenterPage() {
                   Next Question <ChevronRight className="w-6 h-6 inline ml-2" />
                 </button>
                 <p className="text-gray-500 mt-2 text-sm">Press Space to continue</p>
+              </div>
+            )}
+            
+            {!isFinished && scoredRoundNumber !== null && scoredRoundNumber >= (gameState?.totalRounds ?? 0) && (
+              <div className="mt-8 text-center">
+                <p className="text-2xl text-gray-300 mb-6">🎉 All rounds complete! 🎉</p>
+                <button
+                  onClick={() => router.push(`/scoreboard/${gameSessionId}`)}
+                  className="btn-primary text-xl px-8 py-4"
+                >
+                  <Trophy className="w-6 h-6 inline mr-2" />
+                  Finalize Scores
+                </button>
               </div>
             )}
             
