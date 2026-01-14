@@ -42,6 +42,8 @@ export interface TeamWithRank {
 }
 
 export interface LeaderboardEntry {
+  id: string;
+  name: string;
   teamId: string;
   teamName: string;
   totalScore: number;

@@ -358,6 +358,8 @@ export function buildLeaderboard(teams: Array<{
     previousScore = team.score;
     
     return {
+      id: team.teamId,
+      name: team.teamName,
       teamId: team.teamId,
       teamName: team.teamName,
       totalScore: team.totalScore,
