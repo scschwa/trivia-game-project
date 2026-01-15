@@ -10,7 +10,9 @@ import {
   ChevronRight, 
   LogOut,
   Keyboard,
-  X
+  X,
+  CheckCircle,
+  ListChecks
 } from 'lucide-react';
 import { useSocket } from '@/hooks/useSocket';
 import { useTimer } from '@/hooks/useTimer';
@@ -34,6 +36,7 @@ export default function HostPresenterPage() {
   const [error, setError] = useState('');
   const [isLoading, setIsLoading] = useState(true);
   const [showLeaderboard, setShowLeaderboard] = useState(false);
+  const [showRoundAnswers, setShowRoundAnswers] = useState(false);
   const [showConfirmEnd, setShowConfirmEnd] = useState(false);
   const [showKeyboardHelp, setShowKeyboardHelp] = useState(false);
   const [scoredRoundNumber, setScoredRoundNumber] = useState<number | null>(null);
@@ -63,6 +66,7 @@ export default function HostPresenterPage() {
     onGameStarted: (data: { gameState: GameState }) => {
       setGameState(data.gameState);
       setShowLeaderboard(false);
+      setShowRoundAnswers(false);
     },
     onQuestionRevealed: (data: { 
       roundNumber: number; 
@@ -84,6 +88,7 @@ export default function HostPresenterPage() {
       });
       setTimerState(data.timer);
       setShowLeaderboard(false);
+      setShowRoundAnswers(false);
     },
     onAnsweringStarted: (data: { timer: TimerState }) => {
       setGameState((prev) => {
@@ -118,7 +123,8 @@ export default function HostPresenterPage() {
       setGameState(data.gameState);
       setLeaderboard(data.leaderboard);
       setScoredRoundNumber(data.roundNumber);
-      setShowLeaderboard(true);
+      setShowRoundAnswers(true); // Show answers first
+      setShowLeaderboard(false);
     },
     onGamePaused: () => {
       setGameState((prev) => {
@@ -195,6 +201,10 @@ export default function HostPresenterPage() {
           startGame(gameSessionId);
         } else if (gameState.phase === 'paused') {
           resumeGame(gameSessionId);
+        } else if (showRoundAnswers) {
+          // Transition from Round Answers to Leaderboard
+          setShowRoundAnswers(false);
+          setShowLeaderboard(true);
         } else if (showLeaderboard && gameState.phase !== 'finished') {
           nextQuestion(gameSessionId);
         }
@@ -207,7 +217,7 @@ export default function HostPresenterPage() {
         }
         break;
       case 'KeyN':
-        if (gameState.phase !== 'finished' && !showLeaderboard && remainingTime === 0) {
+        if (gameState.phase !== 'finished' && !showLeaderboard && !showRoundAnswers && remainingTime === 0) {
           nextQuestion(gameSessionId);
         }
         break;
@@ -221,6 +231,7 @@ export default function HostPresenterPage() {
         break;
       case 'Escape':
         setShowLeaderboard(false);
+        setShowRoundAnswers(false);
         setShowKeyboardHelp(false);
         break;
       case 'Slash':
@@ -229,7 +240,7 @@ export default function HostPresenterPage() {
         }
         break;
     }
-  }, [isConnected, gameState, showLeaderboard, remainingTime, gameSessionId, startGame, nextQuestion, pauseGame, resumeGame, scoreRound]);
+  }, [isConnected, gameState, showLeaderboard, showRoundAnswers, remainingTime, gameSessionId, startGame, nextQuestion, pauseGame, resumeGame, scoreRound]);
   
   useEffect(() => {
     window.addEventListener('keydown', handleKeyDown);
@@ -362,8 +373,57 @@ export default function HostPresenterPage() {
           </div>
         )}
         
-        {/* Leaderboard View */}
-        {showLeaderboard && leaderboard.length > 0 ? (
+        {/* Round Answers View - Shows after scoring, before leaderboard */}
+        {showRoundAnswers && scoredRoundNumber !== null && gameState?.questions ? (
+          <div className="w-full max-w-4xl animate-fade-in">
+            <div className="text-center mb-8">
+              <h2 className="text-4xl font-bold text-primary-400 flex items-center justify-center gap-3">
+                <ListChecks className="w-10 h-10" />
+                Round {scoredRoundNumber} Answers
+              </h2>
+            </div>
+            
+            <div className="space-y-4">
+              {(gameState.questions[scoredRoundNumber] || []).map((q, idx) => (
+                <div 
+                  key={idx}
+                  className="bg-gray-800 rounded-xl p-6 border border-gray-700"
+                >
+                  <div className="flex items-start gap-4">
+                    <div className="flex-shrink-0 w-10 h-10 bg-primary-600 rounded-full flex items-center justify-center text-white font-bold">
+                      {q.questionNumber}
+                    </div>
+                    <div className="flex-1">
+                      <p className="text-xl text-white font-medium mb-3">{q.question}</p>
+                      <div className="flex items-center gap-2 text-green-400">
+                        <CheckCircle className="w-5 h-5" />
+                        <span className="text-lg font-semibold">
+                          {q.correctAnswer}. {q[`option${q.correctAnswer}` as keyof Question] as string}
+                        </span>
+                        <span className="text-gray-400 ml-2">({q.points} pts)</span>
+                      </div>
+                    </div>
+                  </div>
+                </div>
+              ))}
+            </div>
+            
+            <div className="mt-8 text-center">
+              <button
+                onClick={() => {
+                  setShowRoundAnswers(false);
+                  setShowLeaderboard(true);
+                }}
+                className="btn-primary text-xl px-8 py-4"
+              >
+                <Trophy className="w-6 h-6 inline mr-2" />
+                See Scores
+              </button>
+              <p className="text-gray-500 mt-2 text-sm">Press Space to continue</p>
+            </div>
+          </div>
+        ) : showLeaderboard && leaderboard.length > 0 ? (
+          /* Leaderboard View */
           <div className="w-full max-w-4xl animate-fade-in">
             <div className="text-center mb-8">
               <h2 className="text-4xl font-bold text-yellow-400 flex items-center justify-center gap-3">
@@ -478,7 +538,7 @@ export default function HostPresenterPage() {
               </button>
             )}
             
-            {remainingTime === 0 && !showLeaderboard && !isFinished && (
+            {remainingTime === 0 && !showLeaderboard && !showRoundAnswers && !isFinished && (
               <>
                 <button
                   onClick={() => scoreRound(gameSessionId, (gameState?.currentRoundIndex ?? 0) + 1)}
