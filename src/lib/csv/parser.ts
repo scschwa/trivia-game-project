@@ -82,7 +82,7 @@ export function parseAndValidateCSV(csvContent: string): CSVValidationResult {
     // Normalize row keys to match expected schema
     const normalizedRow: Record<string, unknown> = {};
     for (const [key, value] of Object.entries(row)) {
-      const lowerKey = key.toLowerCase();
+      const lowerKey = key.toLowerCase().trim();
       // Map to expected camelCase keys
       if (lowerKey === 'roundnumber') normalizedRow.roundNumber = value;
       else if (lowerKey === 'questionnumber') normalizedRow.questionNumber = value;
@@ -92,7 +92,7 @@ export function parseAndValidateCSV(csvContent: string): CSVValidationResult {
       else if (lowerKey === 'answerc') normalizedRow.answerC = value;
       else if (lowerKey === 'answerd') normalizedRow.answerD = value;
       else if (lowerKey === 'correctanswer') normalizedRow.correctAnswer = value;
-      else if (lowerKey === 'points') normalizedRow.points = value || 1;
+      else if (lowerKey === 'points' || lowerKey.startsWith('points')) normalizedRow.points = value || 10;
     }
     
     // Validate with Zod

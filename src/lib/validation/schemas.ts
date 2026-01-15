@@ -22,7 +22,7 @@ export const CSVRowSchema = z.object({
       message: 'Correct answer must be A, B, C, or D',
     })
   ),
-  points: z.coerce.number().int().positive().optional().default(1),
+  points: z.coerce.number().int().positive().optional().default(10),
 });
 
 export type CSVRow = z.infer<typeof CSVRowSchema>;
