@@ -89,6 +89,7 @@ export function getClientTimerState(serverState: ServerTimerState): TimerState {
       remainingMs: 0,
       totalMs: 0,
       endsAt: null,
+      serverTime: now,
     };
   }
   
@@ -102,6 +103,7 @@ export function getClientTimerState(serverState: ServerTimerState): TimerState {
       remainingMs: serverState.remainingTimeOnPause || 0,
       totalMs: wasInReadingDelay ? serverState.readingDelayMs : serverState.answeringTimeMs,
       endsAt: null,
+      serverTime: now,
     };
   }
   
@@ -112,6 +114,7 @@ export function getClientTimerState(serverState: ServerTimerState): TimerState {
       remainingMs: serverState.answeringStartsAt - now,
       totalMs: serverState.readingDelayMs,
       endsAt: serverState.answeringStartsAt,
+      serverTime: now,
     };
   }
   
@@ -122,6 +125,7 @@ export function getClientTimerState(serverState: ServerTimerState): TimerState {
       remainingMs: serverState.questionEndsAt - now,
       totalMs: serverState.answeringTimeMs,
       endsAt: serverState.questionEndsAt,
+      serverTime: now,
     };
   }
   
@@ -131,6 +135,7 @@ export function getClientTimerState(serverState: ServerTimerState): TimerState {
     remainingMs: 0,
     totalMs: serverState.answeringTimeMs,
     endsAt: serverState.questionEndsAt,
+    serverTime: now,
   };
 }
 

@@ -2,9 +2,10 @@
 
 /**
  * Timer Hook - Calculates remaining time from server timestamp
+ * Uses server time offset to compensate for clock skew between client and server
  */
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useEffect, useCallback, useRef } from 'react';
 import { TimerState } from '@/types';
 
 interface UseTimerReturn {
@@ -20,6 +21,8 @@ interface UseTimerReturn {
 
 export function useTimer(timerState: TimerState | null): UseTimerReturn {
   const [remainingMs, setRemainingMs] = useState(0);
+  // Track server time offset (serverTime - clientTime)
+  const serverTimeOffsetRef = useRef<number>(0);
   
   useEffect(() => {
     if (!timerState) {
@@ -27,15 +30,25 @@ export function useTimer(timerState: TimerState | null): UseTimerReturn {
       return;
     }
     
+    // Calculate server time offset when we receive a timer state with serverTime
+    if (timerState.serverTime) {
+      const clientNow = Date.now();
+      // Positive offset means server is ahead of client
+      // Negative offset means server is behind client
+      serverTimeOffsetRef.current = timerState.serverTime - clientNow;
+    }
+    
     if (timerState.phase === 'paused' || timerState.phase === 'waiting' || timerState.phase === 'ended') {
       setRemainingMs(timerState.remainingMs);
       return;
     }
     
-    // For active timers, calculate from endsAt
+    // For active timers, calculate from endsAt using server-adjusted time
     const updateRemaining = () => {
       if (timerState.endsAt) {
-        const remaining = Math.max(0, timerState.endsAt - Date.now());
+        // Adjust client time by the server offset to match server time
+        const adjustedNow = Date.now() + serverTimeOffsetRef.current;
+        const remaining = Math.max(0, timerState.endsAt - adjustedNow);
         setRemainingMs(remaining);
       } else {
         setRemainingMs(timerState.remainingMs);

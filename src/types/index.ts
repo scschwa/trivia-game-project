@@ -72,6 +72,7 @@ export interface TimerState {
   totalMs: number;
   totalDuration?: number; // alias for backwards compatibility
   endsAt: number | null;
+  serverTime: number; // Server's Date.now() when this was calculated
   startedAt?: number;
   pausedAt?: number;
 }
