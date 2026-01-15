@@ -29,6 +29,7 @@ export interface TimerState {
   remainingMs: number;
   totalMs: number;
   endsAt: number | null;
+  serverTime: number; // Server's Date.now() when this was calculated
 }
 
 export interface TeamWithRank {

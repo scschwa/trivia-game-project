@@ -163,6 +163,7 @@ export function calculateTimerState(session: {
       remainingMs: 0,
       totalMs: 0,
       endsAt: null,
+      serverTime: now,
     };
   }
   
@@ -177,6 +178,7 @@ export function calculateTimerState(session: {
       remainingMs: session.remainingTimeOnPause || 0,
       totalMs: wasInReadingDelay ? session.readingDelayMs : session.answeringTimeMs,
       endsAt: null,
+      serverTime: now,
     };
   }
   
@@ -190,6 +192,7 @@ export function calculateTimerState(session: {
       remainingMs: answeringStartsAt - now,
       totalMs: session.readingDelayMs,
       endsAt: answeringStartsAt,
+      serverTime: now,
     };
   }
   
@@ -200,6 +203,7 @@ export function calculateTimerState(session: {
       remainingMs: questionEndsAt - now,
       totalMs: session.answeringTimeMs,
       endsAt: questionEndsAt,
+      serverTime: now,
     };
   }
   
@@ -209,6 +213,7 @@ export function calculateTimerState(session: {
     remainingMs: 0,
     totalMs: session.answeringTimeMs,
     endsAt: questionEndsAt,
+    serverTime: now,
   };
 }
 
