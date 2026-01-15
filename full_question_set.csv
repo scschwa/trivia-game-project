@@ -1,0 +1,17 @@
+roundNumber, questionNumber, question, answerA, answerB, answerC, answerD, correctAnswer, points (optional)
+1,1,What is the largest country by land area?,Canada,China,United States,Russia,D,10
+1,2,The Nile empties into which sea?,Red Sea,Black Sea,Mediterranean Sea,Arabian Sea,C,10
+1,3,What country is an enclave within South Africa?,Lesotho,Namibia,Eswatini,Botswana,A,20
+1,4,Which is the capital city at the highest elevation?,Mexico City,Kathmandu,Bogota,La Paz,D,20
+1,5,What is the name of the strait that separates Spain and Morocco?,Dardanelles,Strait of Hormuz,Strait of Gilbraltar,Bosphorus Strait,C,20
+1,6,What is the deepest lake in the world?,Caspian Sea,Crater Lake,Baikal,Lake Superior,C,30
+1,7,Which city in the US is the oldest persistent seat of government?,Albany,Boston,Annapolis,Santa Fe,D,30
+1,8,What is the largest desert?,Antarctic,Arabian,Gobi,Sahara,A,40
+2,1,What's the name of the river that runs through Dallas?,Brazos,Colorado,Rio Grande,Trinity,D,10
+2,2,"What was the year that the federal government moved to Washington, DC?",1776,1789,1791,1800,D,10
+2,3,The 1936 exposition celebrated what anniversary?,US Centennial,Dallas Bicentennial,Texas Centenial,Texas Sesquicentennial,C,20
+2,4,"Who designed the original 1791 plan for Washington, DC?",Benjamin Banneker,Benjamin Franklin,Andrew Ellicott,Pierre-Charles L'Enfant,D,20
+2,5,Who is Dallas Love Field named after?,Lt. Moss L. Love,Henry Love,Lovejoy Station,Love Canal,A,20
+2,6,What year was the city of Alexandria retoceded to Virginia?,1812,1846,1861,It was never part of DC,B,30
+2,7,Which of these major US corporations first opened in Dallas?,Whataburger,Texas Roadhouse,Blockbuster Video,Circle K,C,30
+2,8,"Who was the first mayor of DC, elected in 1974 after the passage of the DC Home Rule Act?",Anthony Williams,Marion Barry,Sharon Pratt,Walter Washington,D,40

@@ -45,7 +45,7 @@ export async function startGameSession(
   triviaConfigId: string,
   hostPin: string,
   customGameCode?: string,
-  readingDelayMs: number = 15000,
+  readingDelayMs: number = 10000,
   answeringTimeMs: number = 30000
 ): Promise<StartGameResult> {
   try {

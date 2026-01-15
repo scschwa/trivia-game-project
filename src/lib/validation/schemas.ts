@@ -79,7 +79,7 @@ export const StartGameSchema = z.object({
   triviaConfigId: z.string().cuid(),
   gameCode: GameCodeSchema,
   hostPin: HostPinSchema,
-  readingDelayMs: z.number().int().min(5000).max(60000).optional().default(15000),
+  readingDelayMs: z.number().int().min(5000).max(60000).optional().default(10000),
   answeringTimeMs: z.number().int().min(10000).max(120000).optional().default(30000),
 });
 

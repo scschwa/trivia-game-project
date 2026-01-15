@@ -60,7 +60,7 @@ model GameSession {
   remainingTimeOnPause Int?   // Milliseconds remaining when paused
   
   // Timing configuration (milliseconds)
-  readingDelayMs  Int @default(15000)  // 15 seconds
+  readingDelayMs  Int @default(10000)  // 10 seconds
   answeringTimeMs Int @default(30000)  // 30 seconds
   
   // Reference to trivia config
