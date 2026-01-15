@@ -171,9 +171,15 @@ export default function StartGamePage() {
                         <button
                           onClick={(e) => {
                             e.stopPropagation();
-                            setDeleteConfirmId(config.id);
+                            if (config.gameCount === 0) {
+                              setDeleteConfirmId(config.id);
+                            }
                           }}
-                          className="p-2 text-gray-400 hover:text-red-500 hover:bg-red-50 rounded-lg transition-colors"
+                          className={`p-2 rounded-lg transition-colors ${
+                            config.gameCount > 0 
+                              ? 'text-gray-300 cursor-not-allowed' 
+                              : 'text-gray-400 hover:text-red-500 hover:bg-red-50'
+                          }`}
                           disabled={config.gameCount > 0}
                           title={config.gameCount > 0 ? 'Cannot delete config used in games' : 'Delete config'}
                         >
