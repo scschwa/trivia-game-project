@@ -22,7 +22,7 @@ interface AnswerHistoryItem {
   round: number;
   question: number;
   answer: AnswerOption;
-  isCorrect: boolean;
+  isCorrect: boolean | null; // null until round is scored
   points: number;
 }
 
@@ -169,21 +169,21 @@ export default function TeamPlayPage() {
       if (data.teamId === teamId) {
         setSelectedAnswer(data.selectedAnswer);
         setHasSubmitted(true);
-      }
-    },
-    onAnswerResult: (data: { correct: boolean; points: number; totalScore: number }) => {
-      setAnswerResult({ correct: data.correct, points: data.points });
-      setTotalScore(data.totalScore);
-      
-      // Add to history
-      if (gameState && currentQuestion) {
-        setAnswerHistory((prev) => [...prev, {
-          round: (gameState.currentRoundIndex ?? 0) + 1,
-          question: (gameState.currentQuestionIndex ?? 0) + 1,
-          answer: selectedAnswer!,
-          isCorrect: data.correct,
-          points: data.points,
-        }]);
+        
+        // Add to answer history immediately (without correctness - that comes at round end)
+        setAnswerHistory((prev) => {
+          // Check if we already have this answer (avoid duplicates)
+          const exists = prev.some(h => h.round === data.roundNumber && h.question === data.questionNumber);
+          if (exists) return prev;
+          
+          return [...prev, {
+            round: data.roundNumber,
+            question: data.questionNumber,
+            answer: data.selectedAnswer,
+            isCorrect: null, // Unknown until round is scored
+            points: 0,
+          }];
+        });
       }
     },
     onRoundScored: (data: RoundScoringResult) => {
@@ -546,12 +546,20 @@ export default function TeamPlayPage() {
                   <div
                     key={index}
                     className={`flex items-center justify-between py-2 px-3 rounded-lg ${
-                      item.isCorrect ? 'bg-green-500/10' : 'bg-red-500/10'
+                      item.isCorrect === null 
+                        ? 'bg-gray-700/50' 
+                        : item.isCorrect 
+                          ? 'bg-green-500/10' 
+                          : 'bg-red-500/10'
                     }`}
                   >
                     <div className="flex items-center gap-3">
                       <span className={`w-6 h-6 rounded-full flex items-center justify-center text-xs font-bold ${
-                        item.isCorrect ? 'bg-green-500 text-white' : 'bg-red-500 text-white'
+                        item.isCorrect === null 
+                          ? 'bg-gray-500 text-white' 
+                          : item.isCorrect 
+                            ? 'bg-green-500 text-white' 
+                            : 'bg-red-500 text-white'
                       }`}>
                         {item.answer}
                       </span>
@@ -560,9 +568,13 @@ export default function TeamPlayPage() {
                       </span>
                     </div>
                     <span className={`text-sm font-bold ${
-                      item.isCorrect ? 'text-green-400' : 'text-red-400'
+                      item.isCorrect === null 
+                        ? 'text-gray-400' 
+                        : item.isCorrect 
+                          ? 'text-green-400' 
+                          : 'text-red-400'
                     }`}>
-                      {item.points > 0 ? `+${item.points}` : '0'}
+                      {item.isCorrect === null ? 'Pending' : item.points > 0 ? `+${item.points}` : '0'}
                     </span>
                   </div>
                 ))}
