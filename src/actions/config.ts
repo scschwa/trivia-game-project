@@ -70,16 +70,18 @@ export async function createTriviaConfig(
 }
 
 /**
- * Get all trivia configs
+ * Get all trivia configs (optionally include archived)
  */
-export async function getTriviaConfigs() {
+export async function getTriviaConfigs(includeArchived: boolean = false) {
   try {
     const configs = await prisma.triviaConfig.findMany({
+      where: includeArchived ? {} : { isArchived: false },
       orderBy: { createdAt: 'desc' },
       select: {
         id: true,
         name: true,
         description: true,
+        isArchived: true,
         totalRounds: true,
         totalQuestions: true,
         createdAt: true,
@@ -147,6 +149,26 @@ export async function deleteTriviaConfig(configId: string): Promise<{ success: b
     return {
       success: false,
       error: 'Failed to delete config',
+    };
+  }
+}
+
+/**
+ * Archive or unarchive a trivia config
+ */
+export async function archiveTriviaConfig(configId: string, archive: boolean = true): Promise<{ success: boolean; error?: string }> {
+  try {
+    await prisma.triviaConfig.update({
+      where: { id: configId },
+      data: { isArchived: archive },
+    });
+    
+    return { success: true };
+  } catch (error) {
+    console.error('archiveTriviaConfig error:', error);
+    return {
+      success: false,
+      error: archive ? 'Failed to archive config' : 'Failed to restore config',
     };
   }
 }

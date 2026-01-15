@@ -75,7 +75,7 @@ interface ConfirmModalProps {
   message: string;
   confirmText?: string;
   cancelText?: string;
-  variant?: 'danger' | 'primary';
+  variant?: 'danger' | 'primary' | 'warning';
 }
 
 export function ConfirmModal({
@@ -88,6 +88,11 @@ export function ConfirmModal({
   cancelText = 'Cancel',
   variant = 'primary',
 }: ConfirmModalProps) {
+  const buttonClass = 
+    variant === 'danger' ? 'btn-danger' : 
+    variant === 'warning' ? 'btn-warning' : 
+    'btn-primary';
+  
   return (
     <Modal isOpen={isOpen} onClose={onClose} title={title}>
       <p className="text-gray-600 mb-6">{message}</p>
@@ -100,7 +105,7 @@ export function ConfirmModal({
             onConfirm();
             onClose();
           }} 
-          className={variant === 'danger' ? 'btn-danger' : 'btn-primary'}
+          className={buttonClass}
         >
           {confirmText}
         </button>

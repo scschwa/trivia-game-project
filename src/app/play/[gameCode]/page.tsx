@@ -192,6 +192,24 @@ export default function TeamPlayPage() {
       if (myEntry) {
         setTotalScore(myEntry.totalScore);
       }
+      
+      // Update answer history with correct/incorrect status for this round
+      setAnswerHistory((prev) => 
+        prev.map((answer) => {
+          // Only update answers from this round that are still pending
+          if (answer.round === data.roundNumber && answer.isCorrect === null) {
+            const correctInfo = data.correctAnswers[answer.question];
+            if (correctInfo) {
+              return {
+                ...answer,
+                isCorrect: answer.answer === correctInfo.correct,
+                points: answer.answer === correctInfo.correct ? correctInfo.points : 0,
+              };
+            }
+          }
+          return answer;
+        })
+      );
     },
     onGamePaused: () => {
       setGameState((prev) => {

@@ -61,6 +61,10 @@ body {
     @apply bg-gradient-to-r from-red-500 to-red-600 text-white px-6 py-3 rounded-xl font-semibold shadow-lg hover:shadow-xl hover:from-red-600 hover:to-red-700 transition-all duration-200 active:scale-95;
   }
 
+  .btn-warning {
+    @apply bg-gradient-to-r from-orange-500 to-orange-600 text-white px-6 py-3 rounded-xl font-semibold shadow-lg hover:shadow-xl hover:from-orange-600 hover:to-orange-700 transition-all duration-200 active:scale-95;
+  }
+
   .card {
     @apply bg-white rounded-2xl shadow-lg p-6 border border-gray-100;
   }

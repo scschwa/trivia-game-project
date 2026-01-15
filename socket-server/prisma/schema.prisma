@@ -22,6 +22,7 @@ model TriviaConfig {
   id          String   @id @default(cuid())
   name        String
   description String?
+  isArchived  Boolean  @default(false)
   
   // Questions stored as JSON array
   // Each question: { roundNumber, questionNumber, question, answerA, answerB, answerC, answerD, correctAnswer, points }
@@ -36,6 +37,7 @@ model TriviaConfig {
   gameSessions GameSession[]
   
   @@index([createdAt])
+  @@index([isArchived])
 }
 
 model GameSession {
@@ -60,8 +62,8 @@ model GameSession {
   remainingTimeOnPause Int?   // Milliseconds remaining when paused
   
   // Timing configuration (milliseconds)
-  readingDelayMs  Int @default(10000)  // 10 seconds
-  answeringTimeMs Int @default(30000)  // 30 seconds
+  readingDelayMs  Int @default(10000)  // 10 seconds between questions
+  answeringTimeMs Int @default(30000)  // 30 seconds to answer
   
   // Reference to trivia config
   triviaConfigId String

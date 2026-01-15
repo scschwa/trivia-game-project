@@ -3,8 +3,8 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { ArrowLeft, Play, Settings, Trash2 } from 'lucide-react';
-import { getTriviaConfigs, deleteTriviaConfig } from '@/actions/config';
+import { ArrowLeft, Play, Settings, Trash2, Archive, ArchiveRestore, Eye, EyeOff } from 'lucide-react';
+import { getTriviaConfigs, deleteTriviaConfig, archiveTriviaConfig } from '@/actions/config';
 import { startGameSession } from '@/actions/game';
 import { ConfirmModal } from '@/components/ui/Modal';
 
@@ -12,6 +12,7 @@ interface TriviaConfig {
   id: string;
   name: string;
   description: string | null;
+  isArchived: boolean;
   totalRounds: number;
   totalQuestions: number;
   createdAt: Date;
@@ -29,17 +30,21 @@ export default function StartGamePage() {
   const [isStarting, setIsStarting] = useState(false);
   const [error, setError] = useState('');
   const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
+  const [archiveConfirmId, setArchiveConfirmId] = useState<string | null>(null);
+  const [showArchived, setShowArchived] = useState(false);
   
   useEffect(() => {
     loadConfigs();
-  }, []);
+  }, [showArchived]);
   
   const loadConfigs = async () => {
     setIsLoading(true);
-    const data = await getTriviaConfigs();
+    const data = await getTriviaConfigs(showArchived);
     setConfigs(data);
-    if (data.length > 0 && !selectedConfigId) {
-      setSelectedConfigId(data[0].id);
+    // Only auto-select if we don't have a selection and there are non-archived configs
+    const activeConfigs = data.filter(c => !c.isArchived);
+    if (activeConfigs.length > 0 && !selectedConfigId) {
+      setSelectedConfigId(activeConfigs[0].id);
     }
     setIsLoading(false);
   };
@@ -52,6 +57,19 @@ export default function StartGamePage() {
       setError(result.error || 'Failed to delete');
     }
     setDeleteConfirmId(null);
+  };
+  
+  const handleArchive = async (id: string, archive: boolean) => {
+    const result = await archiveTriviaConfig(id, archive);
+    if (result.success) {
+      if (selectedConfigId === id && archive) {
+        setSelectedConfigId('');
+      }
+      await loadConfigs();
+    } else {
+      setError(result.error || 'Failed to archive');
+    }
+    setArchiveConfirmId(null);
   };
   
   const handleStart = async (e: React.FormEvent) => {
@@ -97,6 +115,8 @@ export default function StartGamePage() {
   };
   
   const selectedConfig = configs.find((c) => c.id === selectedConfigId);
+  const activeConfigs = configs.filter(c => !c.isArchived);
+  const archivedConfigs = configs.filter(c => c.isArchived);
   
   return (
     <div className="min-h-screen bg-gray-50">
@@ -118,19 +138,30 @@ export default function StartGamePage() {
             <div className="card">
               <div className="flex items-center justify-between mb-4">
                 <h2 className="text-xl font-bold text-gray-800">Select Trivia Config</h2>
-                <Link 
-                  href="/host/create" 
-                  className="text-primary-600 hover:text-primary-700 text-sm font-medium"
-                >
-                  + Create New
-                </Link>
+                <div className="flex items-center gap-3">
+                  <button
+                    onClick={() => setShowArchived(!showArchived)}
+                    className={`flex items-center gap-1 text-sm font-medium transition-colors ${
+                      showArchived ? 'text-purple-600' : 'text-gray-500 hover:text-gray-700'
+                    }`}
+                  >
+                    {showArchived ? <EyeOff className="w-4 h-4" /> : <Eye className="w-4 h-4" />}
+                    {showArchived ? 'Hide Archived' : 'Show Archived'}
+                  </button>
+                  <Link 
+                    href="/host/create" 
+                    className="text-primary-600 hover:text-primary-700 text-sm font-medium"
+                  >
+                    + Create New
+                  </Link>
+                </div>
               </div>
               
               {isLoading ? (
                 <div className="flex justify-center py-12">
                   <div className="w-8 h-8 border-4 border-primary-500 border-t-transparent rounded-full animate-spin" />
                 </div>
-              ) : configs.length === 0 ? (
+              ) : activeConfigs.length === 0 && (!showArchived || archivedConfigs.length === 0) ? (
                 <div className="text-center py-12">
                   <Settings className="w-12 h-12 mx-auto text-gray-400 mb-4" />
                   <p className="text-gray-600 mb-4">No trivia configs yet</p>
@@ -140,7 +171,8 @@ export default function StartGamePage() {
                 </div>
               ) : (
                 <div className="space-y-3">
-                  {configs.map((config) => (
+                  {/* Active Configs */}
+                  {activeConfigs.map((config) => (
                     <div
                       key={config.id}
                       onClick={() => setSelectedConfigId(config.id)}
@@ -168,26 +200,83 @@ export default function StartGamePage() {
                             </span>
                           </div>
                         </div>
-                        <button
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            if (config.gameCount === 0) {
-                              setDeleteConfirmId(config.id);
-                            }
-                          }}
-                          className={`p-2 rounded-lg transition-colors ${
-                            config.gameCount > 0 
-                              ? 'text-gray-300 cursor-not-allowed' 
-                              : 'text-gray-400 hover:text-red-500 hover:bg-red-50'
-                          }`}
-                          disabled={config.gameCount > 0}
-                          title={config.gameCount > 0 ? 'Cannot delete config used in games' : 'Delete config'}
-                        >
-                          <Trash2 className="w-4 h-4" />
-                        </button>
+                        <div className="flex gap-1">
+                          {config.gameCount > 0 ? (
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setArchiveConfirmId(config.id);
+                              }}
+                              className="p-2 rounded-lg transition-colors text-gray-400 hover:text-orange-500 hover:bg-orange-50"
+                              title="Archive config"
+                            >
+                              <Archive className="w-4 h-4" />
+                            </button>
+                          ) : (
+                            <button
+                              onClick={(e) => {
+                                e.stopPropagation();
+                                setDeleteConfirmId(config.id);
+                              }}
+                              className="p-2 rounded-lg transition-colors text-gray-400 hover:text-red-500 hover:bg-red-50"
+                              title="Delete config"
+                            >
+                              <Trash2 className="w-4 h-4" />
+                            </button>
+                          )}
+                        </div>
                       </div>
                     </div>
                   ))}
+                  
+                  {/* Archived Configs */}
+                  {showArchived && archivedConfigs.length > 0 && (
+                    <>
+                      <div className="flex items-center gap-2 mt-6 mb-2">
+                        <div className="flex-1 h-px bg-gray-200" />
+                        <span className="text-sm font-medium text-gray-400">Archived</span>
+                        <div className="flex-1 h-px bg-gray-200" />
+                      </div>
+                      {archivedConfigs.map((config) => (
+                        <div
+                          key={config.id}
+                          className="p-4 rounded-xl border-2 border-gray-200 bg-gray-50 opacity-75"
+                        >
+                          <div className="flex items-start justify-between">
+                            <div className="flex-1">
+                              <div className="flex items-center gap-2">
+                                <h3 className="font-semibold text-gray-600">{config.name}</h3>
+                                <span className="text-xs bg-gray-200 text-gray-500 px-2 py-0.5 rounded">
+                                  Archived
+                                </span>
+                              </div>
+                              {config.description && (
+                                <p className="text-sm text-gray-500 mt-1">{config.description}</p>
+                              )}
+                              <div className="flex gap-3 mt-2 text-xs">
+                                <span className="bg-purple-50 text-purple-500 px-2 py-1 rounded">
+                                  {config.totalRounds} rounds
+                                </span>
+                                <span className="bg-blue-50 text-blue-500 px-2 py-1 rounded">
+                                  {config.totalQuestions} questions
+                                </span>
+                                <span className="bg-gray-100 text-gray-500 px-2 py-1 rounded">
+                                  Used {config.gameCount} times
+                                </span>
+                              </div>
+                            </div>
+                            <button
+                              onClick={() => handleArchive(config.id, false)}
+                              className="p-2 rounded-lg transition-colors text-gray-400 hover:text-green-500 hover:bg-green-50"
+                              title="Restore config"
+                            >
+                              <ArchiveRestore className="w-4 h-4" />
+                            </button>
+                          </div>
+                        </div>
+                      ))}
+                    </>
+                  )}
                 </div>
               )}
             </div>
@@ -282,6 +371,17 @@ export default function StartGamePage() {
         message="Are you sure you want to delete this trivia config? This action cannot be undone."
         confirmText="Delete"
         variant="danger"
+      />
+      
+      {/* Archive Confirmation Modal */}
+      <ConfirmModal
+        isOpen={archiveConfirmId !== null}
+        onClose={() => setArchiveConfirmId(null)}
+        onConfirm={() => archiveConfirmId && handleArchive(archiveConfirmId, true)}
+        title="Archive Config"
+        message="Are you sure you want to archive this trivia config? You can restore it later from the archived list."
+        confirmText="Archive"
+        variant="warning"
       />
     </div>
   );
