@@ -12,7 +12,8 @@ import {
   Keyboard,
   X,
   CheckCircle,
-  ListChecks
+  ListChecks,
+  Loader2
 } from 'lucide-react';
 import { useSocket } from '@/hooks/useSocket';
 import { useTimer } from '@/hooks/useTimer';
@@ -40,6 +41,7 @@ export default function HostPresenterPage() {
   const [showConfirmEnd, setShowConfirmEnd] = useState(false);
   const [showKeyboardHelp, setShowKeyboardHelp] = useState(false);
   const [scoredRoundNumber, setScoredRoundNumber] = useState<number | null>(null);
+  const [isScoringRound, setIsScoringRound] = useState(false);
   
   // Timer state
   const [timerState, setTimerState] = useState<TimerState | null>(null);
@@ -123,6 +125,7 @@ export default function HostPresenterPage() {
       setGameState(data.gameState);
       setLeaderboard(data.leaderboard);
       setScoredRoundNumber(data.roundNumber);
+      setIsScoringRound(false); // Hide loading popup
       setShowRoundAnswers(true); // Show answers first
       setShowLeaderboard(false);
     },
@@ -223,6 +226,7 @@ export default function HostPresenterPage() {
         break;
       case 'KeyS':
         if (gameState.phase === 'round_scored' || remainingTime === 0) {
+          setIsScoringRound(true);
           scoreRound(gameSessionId, (gameState?.currentRoundIndex ?? 0) + 1);
         }
         break;
@@ -541,7 +545,10 @@ export default function HostPresenterPage() {
             {remainingTime === 0 && !showLeaderboard && !showRoundAnswers && !isFinished && (
               <>
                 <button
-                  onClick={() => scoreRound(gameSessionId, (gameState?.currentRoundIndex ?? 0) + 1)}
+                  onClick={() => {
+                    setIsScoringRound(true);
+                    scoreRound(gameSessionId, (gameState?.currentRoundIndex ?? 0) + 1);
+                  }}
                   className="px-4 py-2 bg-purple-600 hover:bg-purple-700 rounded-lg transition-colors flex items-center gap-2"
                 >
                   <Trophy className="w-5 h-5" />
@@ -633,6 +640,17 @@ export default function HostPresenterPage() {
         confirmText="End Game"
         variant="danger"
       />
+      
+      {/* Scoring Round Loading Overlay */}
+      {isScoringRound && (
+        <div className="fixed inset-0 bg-black/70 backdrop-blur-sm z-50 flex items-center justify-center">
+          <div className="bg-gray-800 rounded-2xl p-8 text-center shadow-2xl">
+            <Loader2 className="w-16 h-16 text-purple-400 mx-auto mb-4 animate-spin" />
+            <h2 className="text-2xl font-bold text-white mb-2">Scoring Round</h2>
+            <p className="text-gray-400">Calculating results...</p>
+          </div>
+        </div>
+      )}
     </div>
   );
 }
