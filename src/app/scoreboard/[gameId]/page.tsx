@@ -1,6 +1,6 @@
 import { notFound } from 'next/navigation';
 import Link from 'next/link';
-import { Trophy, ArrowLeft, Medal, Target, Clock, Users } from 'lucide-react';
+import { Trophy, ArrowLeft, Medal, Target, Clock, Users, AlertTriangle, CheckCircle2 } from 'lucide-react';
 import { getGameResult } from '@/actions/game';
 import { Leaderboard } from '@/components/game/Leaderboard';
 
@@ -124,6 +124,53 @@ export default async function GameResultPage({ params }: PageProps) {
                       <p className="text-xs text-white/60">Top Scorer</p>
                     </div>
                   </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+        
+        {/* Hardest Questions */}
+        {stats.hardestQuestions && stats.hardestQuestions.length > 0 && (
+          <div className="mt-8 bg-white/10 backdrop-blur rounded-2xl p-6">
+            <h3 className="text-2xl font-bold text-white mb-6 flex items-center gap-2">
+              <AlertTriangle className="w-6 h-6 text-red-400" />
+              Hardest Questions
+            </h3>
+            
+            <div className="space-y-4">
+              {stats.hardestQuestions.map((q, index) => (
+                <div key={index} className="bg-white/5 rounded-xl p-4">
+                  <div className="flex items-start justify-between mb-3">
+                    <div className="flex items-center gap-2">
+                      <span className="bg-red-500/20 text-red-400 px-2 py-1 rounded text-sm font-medium">
+                        Round {q.round}, Q{q.questionNumber}
+                      </span>
+                      <span className="text-white/60 text-sm">
+                        {Math.round(q.correctRate * 100)}% correct ({q.correctCount}/{q.totalAnswers})
+                      </span>
+                    </div>
+                  </div>
+                  
+                  <p className="text-white font-medium mb-3">{q.question}</p>
+                  
+                  <div className="flex items-center gap-2 mb-3">
+                    <CheckCircle2 className="w-4 h-4 text-green-400" />
+                    <span className="text-green-400 font-medium">
+                      {q.correctAnswer}: {q.correctAnswerText}
+                    </span>
+                  </div>
+                  
+                  {q.teamsCorrect.length > 0 ? (
+                    <div className="text-sm text-white/60">
+                      <span className="text-white/80">Got it right:</span>{' '}
+                      {q.teamsCorrect.join(', ')}
+                    </div>
+                  ) : (
+                    <div className="text-sm text-red-400/80">
+                      No teams answered correctly
+                    </div>
+                  )}
                 </div>
               ))}
             </div>

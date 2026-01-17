@@ -369,6 +369,50 @@ export async function getGameResult(gameSessionId: string) {
       });
     }
     
+    // Calculate hardest questions (lowest correct answer rate)
+    const questionStats: {
+      round: number;
+      questionNumber: number;
+      question: string;
+      correctAnswer: string;
+      correctAnswerText: string;
+      totalAnswers: number;
+      correctCount: number;
+      correctRate: number;
+      teamsCorrect: string[];
+    }[] = [];
+    
+    for (const q of questions) {
+      const qAnswers = session.answers.filter(
+        (a) => a.roundNumber === q.round && a.questionNumber === q.questionNumber
+      );
+      const correctCount = qAnswers.filter((a) => a.isCorrect).length;
+      const teamsCorrect = qAnswers
+        .filter((a) => a.isCorrect)
+        .map((a) => session.teams.find((t) => t.id === a.teamId)?.name || 'Unknown');
+      
+      // Get the correct answer text
+      const correctAnswerText = q[`option${q.correctAnswer}` as keyof Question] as string;
+      
+      questionStats.push({
+        round: q.round,
+        questionNumber: q.questionNumber,
+        question: q.question,
+        correctAnswer: q.correctAnswer,
+        correctAnswerText,
+        totalAnswers: qAnswers.length,
+        correctCount,
+        correctRate: qAnswers.length > 0 ? correctCount / qAnswers.length : 0,
+        teamsCorrect,
+      });
+    }
+    
+    // Sort by correct rate (ascending) and take the 3 hardest
+    const hardestQuestions = questionStats
+      .filter((q) => q.totalAnswers > 0) // Only include questions that were answered
+      .sort((a, b) => a.correctRate - b.correctRate)
+      .slice(0, 3);
+    
     return {
       game: {
         id: session.id,
@@ -383,6 +427,7 @@ export async function getGameResult(gameSessionId: string) {
         totalCorrect,
         avgResponseTime,
         roundBreakdown,
+        hardestQuestions,
       },
     };
   } catch (error) {

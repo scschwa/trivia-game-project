@@ -52,6 +52,6 @@ roundNumber, questionNumber, question, answerA, answerB, answerC, answerD, corre
 7,3,"The US has hosted the Summer Olympic games more than any other country, in St. Louis, Atlanta, and 2 times previously with this city hosting the Olympics again in 2028.",San Franscisco,Houston,Los Angeles,Las Vegas,C,20
 7,4,This city is both the largest city and first non-predominately English-speaking city to have hosted the Summer Olympics twice.,Beijing,Seoul,Rio de Janeiro,Tokyo,D,20
 7,5,This US state is the only state which has hosted the Winter Olympics more than once (so far!).,Utah,California,New York,Colorado,C,20
-7,6,"While the US dominates the summer games, the most-medaled country in the Winter Games is this country which was won 10 (one tie) of the 24 Winter Olympics so far.",Norway,Canada,USSR/Russia,Sweden,A,30
+7,6,"While the US dominates the summer games, the most-medaled country in the Winter Games is this country which has won 10 (one tie) of the 24 Winter Olympics so far.",Norway,Canada,USSR/Russia,Sweden,A,30
 7,7,"In 1994, the Winter and Summer Olympics were held in an offset year for the first time, with this northern-most city hosting the Winter Games.","Stockholm, Sweden","Lillehammer, Norway","Moscow, Russia","Calgary, Canada",B,30
-7,8,"The Italian cities of Milan and Cortina d'Ampezzo, also known as ""the Queen of"" this geographic feature, are hosting the 2026 Winter Olympic games next month.",Dolomites,Alps,Adriatic,Tuscany,A,40
+7,8,"The Italian cities of Milan and Cortina d'Ampezzo, also known as ""the Queen of [this geographic feature]"", are hosting the 2026 Winter Olympic games next month.",Dolomites,Alps,Adriatic,Tuscany,A,40
