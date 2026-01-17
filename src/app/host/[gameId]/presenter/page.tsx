@@ -432,7 +432,7 @@ export default function HostPresenterPage() {
               </h2>
             </div>
             
-            <Leaderboard entries={leaderboard} showChart />
+            <Leaderboard entries={leaderboard} />
             
             {!isFinished && scoredRoundNumber !== null && scoredRoundNumber < (gameState?.totalRounds ?? 0) && (
               <div className="mt-8 text-center">

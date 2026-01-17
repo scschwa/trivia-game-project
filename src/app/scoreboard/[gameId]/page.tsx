@@ -92,7 +92,7 @@ export default async function GameResultPage({ params }: PageProps) {
             Final Standings
           </h3>
           
-          <Leaderboard entries={leaderboard} showChart />
+          <Leaderboard entries={leaderboard} />
         </div>
         
         {/* Round-by-Round Breakdown */}

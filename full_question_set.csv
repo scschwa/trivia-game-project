@@ -1,12 +1,12 @@
 roundNumber, questionNumber, question, answerA, answerB, answerC, answerD, correctAnswer, points (optional)
 1,1,What is the largest country by land area?,Canada,China,United States,Russia,D,10
 1,2,The Nile empties into which sea?,Red Sea,Black Sea,Mediterranean Sea,Arabian Sea,C,10
-1,3,What country is an enclave within South Africa?,Lesotho,Namibia,Eswatini,Botswana,A,20
+1,3,What is the largest desert on Earth?,Antarctic,Arabian,Gobi,Sahara,A,20
 1,4,Which is the capital city at the highest elevation?,La Paz,Kathmandu,Bogota,Mexico City,A,20
 1,5,What is the name of the strait that separates Spain and Morocco?,Dardanelles,Strait of Hormuz,Strait of Gibraltar,Bosphorus Strait,C,20
 1,6,What is the deepest lake in the world?,Caspian Sea,Baikal,Crater Lake,Lake Superior,B,30
 1,7,Which city in the US is the oldest persistent seat of government?,Albany,Boston,Annapolis,Santa Fe,D,30
-1,8,What is the largest desert on Earth?,Antarctic,Arabian,Gobi,Sahara,A,40
+1,8,What country is an enclave within South Africa?,Lesotho,Namibia,Eswatini,Botswana,A,40
 2,1,What's the name of the river that runs through Dallas?,Brazos,Colorado,Rio Grande,Trinity,D,10
 2,2,"What was the year that the federal government moved to Washington, DC?",1776,1789,1791,1800,D,10
 2,3,The 1936 exposition celebrated what anniversary?,US Centennial,Dallas Bicentennial,Texas Centennial,Texas Sesquicentennial,C,20

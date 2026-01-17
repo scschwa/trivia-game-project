@@ -19,7 +19,7 @@ const CHART_COLORS = [
 export function Leaderboard({ 
   entries, 
   highlightTeamId, 
-  showChart = true,
+  showChart = false,
   className 
 }: LeaderboardProps) {
   // Sort entries by rank
