@@ -508,7 +508,7 @@ export default function HostPresenterPage() {
             
             <QuestionDisplay
               question={currentQuestion}
-              showAnswer={remainingTime === 0}
+              showAnswer={false}
               roundNumber={(gameState?.currentRoundIndex ?? 0) + 1}
               questionNumber={(gameState?.currentQuestionIndex ?? 0) + 1}
             />
