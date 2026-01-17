@@ -3,7 +3,7 @@
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/navigation';
 import Link from 'next/link';
-import { ArrowLeft, Play, Settings, Trash2, Archive, ArchiveRestore, Eye, EyeOff } from 'lucide-react';
+import { ArrowLeft, Play, Settings, Trash2, Archive, ArchiveRestore, Eye, EyeOff, Clock } from 'lucide-react';
 import { getTriviaConfigs, deleteTriviaConfig, archiveTriviaConfig } from '@/actions/config';
 import { startGameSession } from '@/actions/game';
 import { ConfirmModal } from '@/components/ui/Modal';
@@ -32,6 +32,7 @@ export default function StartGamePage() {
   const [deleteConfirmId, setDeleteConfirmId] = useState<string | null>(null);
   const [archiveConfirmId, setArchiveConfirmId] = useState<string | null>(null);
   const [showArchived, setShowArchived] = useState(false);
+  const [answeringTime, setAnsweringTime] = useState(30); // seconds
   
   useEffect(() => {
     loadConfigs();
@@ -97,7 +98,9 @@ export default function StartGamePage() {
       const result = await startGameSession(
         selectedConfigId,
         hostPin,
-        useCustomCode ? customCode : undefined
+        useCustomCode ? customCode : undefined,
+        10000, // readingDelayMs (default)
+        answeringTime * 1000 // answeringTimeMs
       );
       
       if (result.success && result.gameSessionId) {
@@ -334,6 +337,28 @@ export default function StartGamePage() {
                     className="input-field mt-2 text-center text-xl font-mono tracking-widest uppercase"
                   />
                 )}
+              </div>
+              
+              <div>
+                <label htmlFor="answeringTime" className="label flex items-center gap-2">
+                  <Clock className="w-4 h-4" />
+                  Time per Question: {answeringTime} seconds
+                </label>
+                <input
+                  type="range"
+                  id="answeringTime"
+                  min="10"
+                  max="60"
+                  step="5"
+                  value={answeringTime}
+                  onChange={(e) => setAnsweringTime(parseInt(e.target.value))}
+                  className="w-full h-2 bg-gray-200 rounded-lg appearance-none cursor-pointer accent-primary-600"
+                />
+                <div className="flex justify-between text-xs text-gray-500 mt-1">
+                  <span>10s</span>
+                  <span>35s</span>
+                  <span>60s</span>
+                </div>
               </div>
               
               {error && (
