@@ -76,9 +76,9 @@ style: |
 # 🏗️ System Architecture
 
 ```
-        CLIENTS (Browser)
-              │
-    ┌─────────┴─────────┐
+        CLIENTS (Browser)           // Next.js 14 + react 18 + TypeScript
+              │                     // Tailwind CSS for styling
+    ┌─────────┴─────────┐           // Socket.IO Client for real-time comms
     │                   │
     ▼                   ▼
 ┌────────────┐    ┌────────────┐
@@ -94,9 +94,10 @@ style: |
         │ (Supabase) │
         └────────────┘
 ```
+
 ---
 
-# 🤷 What are these components??  Vercel
+# 🤷 What are these components:  Vercel
 
 ![bg right w:600](https://i.imgur.com/4s6Elgm.png)
 
@@ -113,7 +114,7 @@ style: |
 
 ---
 
-# 🤷 What are these components??  Railway.app
+# 🤷 What are these components:  Railway.app
 
 ![bg right w:600](https://i.imgur.com/TkQxzcw.png)
 
@@ -130,16 +131,32 @@ style: |
 
 ---
 
+# 🤷 What are these components:  Supabase
+
+![bg right w:600](https://i.imgur.com/sKjOCBj.png)
+
+<style scoped>
+    section {
+        font-size: 25px;
+    }
+</style>
+
+- Open-source database-as-a-service (DaaS, but the good kind, not like CDA-EU 😊).
+- This lets me build, host, and connect a PostgreSQL database with minimal setup.
+- It also provides the appropriate connection pooling needed for serverless environments like Vercel/Railway.
+- Has a really nice dashboard for running queries, inspecting data, and managing roles.
+
+---
 
 # 🤔 Why This Architecture?
 
 | Decision | Rationale |
 |----------|-----------|
 | **Separate Socket Server** | Vercel doesn't support persistent WebSockets |
-| **Server-Authoritative Timers** | Ensures sync (was having issues w/ this) |
-| **PostgreSQL** | Required for serverless (Supabase pooling) |
-| **Next.js Server Actions** | Type-safe mutations, showing any potential errors upfront |
-| **Prisma ORM** | Shared schema, but type-safe DB to avoid problems |
+| **Server-Authoritative Timers** | Ensures sync with dynamic offsets (was having issues w/ this) |
+| **PostgreSQL** | Required for serverless (Supabase pooling features were clutch) |
+| **Next.js Server Actions** | Type-safe mutations, showing any potential errors upfront, this got a lot of debugging out of the way. |
+| **Prisma ORM** | Shared schema, but type-safe DB to avoid problems/conflicts that could crash clients unexpectedly, ruining gameplay |
 
 ---
 
@@ -153,6 +170,8 @@ style: |
 | **JSON Config** | 327 | 6 | Package & TypeScript config |
 | **Documentation** | 709 | 4+ | README, guides |
 | **Total** | **~14,000** | ~60 | |
+
+I wrote **basically zero** of it (besides the game questions and this presentation).
 
 ---
 
@@ -168,6 +187,8 @@ style: |
 | **Real-time** | `socket.io-client` |
 | **Auth** | `bcrypt`, `jose` (JWT) |
 
+I couldn't have navigated this without significant tuitorials.  I had never used `npm install` or `npx prisma *` before starting this project.
+
 ---
 
 # 📦 Socket Server Dependencies (8 packages)
@@ -179,6 +200,8 @@ style: |
 | **Auth** | `bcrypt`, `jose` |
 | **Config** | `dotenv` |
 | **Validation** | `zod` |
+
+Ditto above - I had never built a socket server before, so this was all new to me.
 
 ---
 
@@ -200,71 +223,34 @@ style: |
 
 # 💾 Database Design
 
+![bg right w:600](https://i.imgur.com/mVn5hdb.png)
+
 - **Questions as JSON blob** - Faster reads, simpler schema
 - **Per-round scores** - Enables breakdown analytics
 - **Strategic indexes** - gameCode, status, createdAt
 
-### 4 Models
+### 4 Table Models:
 ```
 TriviaConfig  →  GameSession  →  Team  →  Answer
 ```
 
 ---
 
-
-
 # 📱 Multi-Device Experience
 
 ### Host/Presenter
-Large display with game controls
-
-### Players
-Mobile-optimized answer buttons
-
-### Scoreboard
-Dedicated final results display
+- **Host:** Large display with game controls assuming projection.
+- **Players:** PC, Tablet, or Mobile-optimized answer buttons/iinterface.
+- **Scoreboard:** Dedicated final results display.
 
 ---
 
 # 🔒 Security Measures
 
-- ✅ Host PIN hashed with **bcrypt**
-- ✅ Unique team **reconnect tokens**
-- ✅ Rate limiting: **5 events/sec** per socket
-- ✅ Input validation with **Zod schemas**
-
----
-
-# 🛠️ Tech Stack Summary
-
-```
-FRONTEND
-├── Next.js 14 + React 18 + TypeScript
-├── Tailwind CSS
-└── Socket.IO Client
-
-BACKEND
-├── Express + Socket.IO Server
-├── Prisma ORM
-└── PostgreSQL (Supabase)
-
-HOSTING
-├── Vercel (web app)
-└── Railway (socket server)
-```
-
----
-
-# 📊 Quick Stats
-
-| Metric | Value |
-|--------|-------|
-| TypeScript Files | 46 |
-| Lines of Code | ~7,800 |
-| Database Models | 4 |
-| Git Commits | 33 |
-| Development Days | 5 |
-| Bug Fix Rate | 55% |
+- ✅ Host PIN hashed with **bcrypt** for secure play
+- ✅ Unique team **reconnect tokens** for session integrity
+- ✅ Rate limiting: **5 events/sec** per socket avoids spamming
+- ✅ Input validation with **Zod schemas** which prevents data issues
 
 ---
 
@@ -279,6 +265,8 @@ HOSTING
 | **Net Lines Added** | ~23,335 |
 | **Average Commits/Day** | 6.6 |
 
+Most of this was up and running in about 2-3 hours from the initial prompt. I spent another 4-5 hours debugging, polishing, and adding features, and doing some playthrus on multiple clients.
+
 ---
 
 # 🔧 Commit Breakdown
@@ -291,10 +279,13 @@ HOSTING
 | **Documentation** | 3 | 9% |
 | **Other** | 2 | 6% |
 
-**Pattern:** Rapid development → Deployment fixes → Polish
+Almost all commits were small and focused, with the majority being performed by Claude Opus 4.5.
 
 ---
 # ⏱️ Traditional Development Estimate
+
+How long should this have taken?
+
 | **Component**	| **Junior** | **Mid-Level** | **Senior**
 |----------|--------|-----------|--------|
 |**Database schema & Prisma setup**	| 2 days | 1 day | 0.5 days |
@@ -318,30 +309,42 @@ HOSTING
 | **Lines of code** | ~14,000 |
 | **Lines per hour** | ~1,750 |)
 
-### ~10-20x Speedup with AI
+~10-20x speedup with GHCP and Claude 4.5 Opus AI vs. a Mid-level / Senior Developer.
 
 ---
 
-# 🚀 Why So Fast?
+# 🚀 What was my workflow?
 
-- ✅ Instant boilerplate generation
-- ✅ Rapid debugging & type fixes
-- ✅ Architecture decisions made quickly
-- ✅ Documentation written alongside code
-- ✅ No context-switching for research
+![bg right w:600](https://i.imgur.com/os5Av8S.png)
 
-**8 hours** → Full-stack real-time multiplayer app
+- I started with ChatGPT, 5.2 Thinking with this prompt.
+- It asked 23 follow-up questions to clarify requirements, which I provided.
+- This generated a markdown-based implementation spec, which I could easily pass into GHCP via VSCode.
 
 ---
 
-# 🙏 Questions?
+# 🚀 What was my workflow? (con't)
 
-**Repository:** github.com/scschwa/trivia-game-project
+![bg right w:600](https://i.imgur.com/LR06pcS.png)
 
-**Tech Stack:**
-Next.js • React • TypeScript • Socket.IO • PostgreSQL • Prisma
+- I am using VSCode 1.108.0 (December 2025) with GHCP Copilot extension.
+- I made a new project folder, launch VSCode, dropped in this imp-spec and asked GHCP in `planning` mode to create an imp-plan.
+- Once satisfied and done with questions, I asked it to implement.
 
 ---
+
+# 🚀 What was my workflow? (con't)
+
+![bg right w:500](https://i.imgur.com/3FuKWvp.png)
+
+- Building actually took a good bit of time and hit context cap a few times.
+- This required me to manually advance it during those (about once every 5-8 minutes or so).
+- Eventually was done and I asked for an deployment guide to test it on local desktop and get up and running in cloud software.
+
+---
+
+🚀 What was my workflow? (con't)
+
 **See this in action**
 
-[![Watch on YouTube](https://i.imgur.com/yxMtHBF.jpeg)](https://www.youtube.com/watch?v=JmdUTrOMwnA)
+[![Watch on YouTube w:900](https://i.imgur.com/yxMtHBF.jpeg)](https://www.youtube.com/watch?v=JmdUTrOMwnA)

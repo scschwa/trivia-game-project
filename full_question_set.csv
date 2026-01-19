@@ -10,7 +10,7 @@ roundNumber, questionNumber, question, answerA, answerB, answerC, answerD, corre
 2,1,What's the name of the river that runs through Dallas?,Brazos,Colorado,Rio Grande,Trinity,D,10
 2,2,"What was the year that the federal government moved to Washington, DC?",1776,1789,1791,1800,D,10
 2,3,The 1936 exposition celebrated what anniversary?,US Centennial,Dallas Bicentennial,Texas Centennial,Texas Sesquicentennial,C,20
-2,4,"Who designed the original 1791 plan for Washington, DC?",Benjamin Banneker,Benjamin Franklin,Andrew Ellicott,Pierre-Charles L'Enfant,D,20
+2,4,"This Maryland planned community built by James Rouse that inspired the Federal government's ""New Town Projects"" has neighborhoods named after famous authors or books (""Hobbit's Glen"") and streets in those that tie as well (""Willow Bottom Dr"" or ""Wood Elves Way"")",Bethesda,Rockville,Gaithersburg,Columbia,D,20
 2,5,Who is Dallas Love Field named after?,Lt. Moss L. Love,Henry Love,Lovejoy Station,Love Canal,A,20
 2,6,What year was the city of Alexandria retroceded to Virginia?,1812,1846,1861,It was never part of DC,B,30
 2,7,Which of these major US companies opened their first storefront in Dallas?,Whataburger,Texas Roadhouse,Blockbuster Video,Circle K,C,30
