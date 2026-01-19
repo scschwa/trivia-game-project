@@ -337,9 +337,10 @@ How long should this have taken?
 
 ![bg right w:500](https://i.imgur.com/3FuKWvp.png)
 
-- Building actually took a good bit of time and hit context cap a few times.
-- This required me to manually advance it during those (about once every 5-8 minutes or so).
-- Eventually was done and I asked for an deployment guide to test it on local desktop and get up and running in cloud software.
+- Building took a good bit of time and hit context cap a few times.
+- This required me to manually advance it during those (~5-8 minutes or so).
+- Once done, I requested a deployment guide to test it on local desktop.
+- This did take a bit of tweaking to get right (local and cloud).
 
 ---
 
