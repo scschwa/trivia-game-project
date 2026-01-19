@@ -32,7 +32,7 @@ style: |
 ---
 
 # Building the Trivia Game
-## How did I do something I had no business doing in like 6 hours?
+## How did I do something I had no business doing in like 8 hours?
 
 **A real-time multiplayer trivia platform, architecture & design overview**
 
