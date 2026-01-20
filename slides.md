@@ -107,7 +107,7 @@ style: |
     }
 </style>
 
-- Cloud-based software to deploy and host host modern frontend frameworks and static websites with easily config.
+- Cloud-based software to deploy and host modern frontend frameworks and static websites with easy config.
 - Provided great feedback on compiler issues when setting up.
 - Allowed for multiple environment settings (via config parameters).
 - Has a lot of monitoring / environment scaffolding.
