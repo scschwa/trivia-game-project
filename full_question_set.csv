@@ -9,13 +9,13 @@ roundNumber, questionNumber, question, answerA, answerB, answerC, answerD, corre
 1,8,What country is an enclave within South Africa?,Lesotho,Namibia,Eswatini,Botswana,A,40
 2,1,What's the name of the river that runs through Dallas?,Brazos,Colorado,Rio Grande,Trinity,D,10
 2,2,"What was the year that the federal government moved to Washington, DC?",1776,1789,1791,1800,D,10
-2,3,The 1936 exposition celebrated what anniversary?,US Centennial,Dallas Bicentennial,Texas Centennial,Texas Sesquicentennial,C,20
-2,4,"This Maryland planned community built by James Rouse that inspired the Federal government's ""New Town Projects"" has neighborhoods named after famous authors or books (""Hobbit's Glen"") and streets in those that tie as well (""Willow Bottom Dr"" or ""Wood Elves Way"")",Bethesda,Rockville,Gaithersburg,Columbia,D,20
+2,3,The 1936 exposition in Dallas celebrated what anniversary?,US Centennial,Dallas Bicentennial,Texas Centennial,Texas Sesquicentennial,C,20
+2,4,"This Maryland planned community built by James Rouse that inspired the Federal government's ""New Town Projects"" has neighborhoods named after famous authors or books (""Hobbit's Glen"") and streets in those that tie as well (""Willow Bottom Dr"" or ""Wood Elves Way"").",Bethesda,Rockville,Gaithersburg,Columbia,D,20
 2,5,Who is Dallas Love Field named after?,Lt. Moss L. Love,Henry Love,Lovejoy Station,Love Canal,A,20
 2,6,What year was the city of Alexandria retroceded to Virginia?,1812,1846,1861,It was never part of DC,B,30
 2,7,Which of these major US companies opened their first storefront in Dallas?,Whataburger,Texas Roadhouse,Blockbuster Video,Circle K,C,30
 2,8,"Who was the first mayor of DC, elected in 1974 after the passage of the DC Home Rule Act?",Anthony Williams,Marion Barry,Sharon Pratt,Walter Washington,D,40
-3,1,"This number one song ""…Baby One More Time"" was a Billboard Hot 100 chart topper for two weeks in early 1999 sung by who?",Britney Spears,Christina Aguilera,Mandy Moore,Alanis Morrisette,A,10
+3,1,"This number one song ""..Baby One More Time"" was a Billboard Hot 100 chart topper for two weeks in early 1999 sung by who?",Britney Spears,Christina Aguilera,Mandy Moore,Alanis Morrisette,A,10
 3,2,Which of these Taylor Swift songs is her longest running number one hit on the Billboard Hot 100?,Love Story,The Fate of Ophelia,Blank Space,Anti-Hero,B,10
 3,3,"Coming out of Las Vegas, this song was the most streamed song on Apple Music from 2000-2010.",Yellow (Coldplay),I bet you look good on the dance floor (Arctic Monkeys),Stronger (Kanye West),Mr. Brightside (The Killers),D,20
 3,4,"During 2020, this artist topped Spotify's most-streamed female artist list for the second year in a row.",Dua Lipa,Billie Eilish,Halsey,Taylor Swift,B,20
@@ -24,7 +24,7 @@ roundNumber, questionNumber, question, answerA, answerB, answerC, answerD, corre
 3,7,"This singer/songwriter was going though hard times when he ran away from his divorce, band, and NYC to hole up in LA in a hotel where he wrote the hit song Iris from 1998's movie City of Angels on a broken guitar.",Fiona Apple,Mariah Carey,John Rzeznik,Jakob Dylan,C,30
 3,8,"While the rise of grunge in the early-mid 1990's is often blamed for killing Hair Metal, this band's reputation was ruined because an unpopular kid on Beavis and Butt-Head wore their tee-shirt.",Winger,Poison,Def Leppard,Skid Row,A,40
 4,1,This first artificial satellite went into orbit in 1957.,Luna,Sputnik,Explorer,Vanguard,B,10
-4,2,This largest of Saturn's 274 known moons is actually larger than the planet Mercury and almost a big as Mars.,Rhea,Enceladus,Titan,Hyperion,C,10
+4,2,This largest of Saturn's 274 known moons is actually larger than the planet Mercury and almost as big as Mars.,Rhea,Enceladus,Titan,Hyperion,C,10
 4,3,"This hypothetical planet with some evidence that it originated in the outer solar system is theorized to have collided with the Earth roughly 4.5 billion years ago, creating the Moon.",Planet X,Theia,Krypton,Nemesis,B,20
 4,4,The last total solar eclipse in the US was in April 2024.  The next one viewable from mainland US will be in what year?,2027,2030,2039,2045,D,20
 4,5,"As Voyager 1 was leaving the solar system, this famous astronomer asked NASA to turn its camera back to Earth to capture the famous ""Pale Blue Dot"" depicting the Earth as a small speck in a band of sunlight.",Carl Sagan,Becky Smethhurst,Neil deGrasse Tyson,Sara Seager,A,20
@@ -42,10 +42,10 @@ roundNumber, questionNumber, question, answerA, answerB, answerC, answerD, corre
 6,1,This show's theme song by The Rembrandts enjoyed 8 weeks at #1 on the Billboard Hot 100 Airplay chart in the mid-1990s.,Seinfeld,Frasier,The Drew Carey Show,Friends,D,10
 6,2,Who directed the 1993 smash hit movie based on Michael Crichton's Jurassic Park?,Steven Spielberg,Ridley Scott,James Cameron,Robert Zemeckis,A,10
 6,3,"The design of major features in this movie released in the 2000's was inspired by the Zhangjiajie National Forest Park in Hunan Province, China.",The Beach,Lord of the Rings,Avatar,Cast Away,C,20
-6,4,This sequel from Disney is their highest grossing animated film worldwide.,Inside Out 2,Zootopia 2,Incredibles 2,Frozen 2,A,20
+6,4,This sequel from Disney is their highest grossing animated film worldwide.,Inside Out 2,Zootopia 2,Incredibles 2,Frozen 2,B,20
 6,5,"During the Superbowl XLIX in 2015, this US company's $4.5mm commercial about a ""child who never grew up"" was widely called the ""worst super bowl"" ad ever and resulted in their Chief Marketing Officer Matt Jauchius resigning months later after a vigorous defense.",Walmart,Nationwide,Chevron,CVS Health,B,20
 6,6,This longest-running American Live-Action Sitcom (by Season) first premiered in 2005 on FX.,Two and a Half Men,It's Always Sunny in Philadelphia,30 Rock,Malcom in the Middle,B,30
-6,7,What was the model of the iconic Nokia sliding phone featured in 1999's The Matrix?,Nokia 3110,Motorola StarTAC,Nokia 8110,Sony Ericsson T28,C,30
+6,7,What was the model of the iconic sliding mobile phone featured in 1999's The Matrix?,Nokia 3110,Motorola StarTAC,Nokia 8110,Sony Ericsson T28,C,30
 6,8,"This US actor who passed in 2023 played the same character, Detective John Munch, in 11 different TV series featured on 6 different networks.",Robert Urich,Eric Roberts,Ted Danson,Richard Belzer,D,40
 7,1,"While the US and USSR/Russia have the most combined number of Olympic Medals at #1 and #2 respectively, this far smaller country is in a remarkably close #3rd place.",Great Britain,Germany,France,Italy,A,10
 7,2,"Along with Great Britain and France, this is the only other country to have participated in 54 Olympic Games.",United States,Switzerland,Italy,Belgium,B,10

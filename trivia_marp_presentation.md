@@ -150,7 +150,7 @@ size: 16:9
 ---
 # Round 3 — Pop Music
 
-**Q1. This number one song "…Baby One More Time" was a Billboard Hot 100 chart topper for two weeks in early 1999 song by who?**
+**Q1. This number one song "…Baby One More Time" was a Billboard Hot 100 chart topper for two weeks in early 1999 sung by who?**
 
 |  |  |
 |---|---|
@@ -384,7 +384,7 @@ size: 16:9
 ---
 # Round 6 — Movies & TV
 
-**Q3. The design of major features in this movie released in the 2000's was inspired by the Zhangjiajie National Forest Part in Hunan Province, China.**
+**Q3. The design of major features in this movie released in the 2000's was inspired by the Zhangjiajie National Forest Park in Hunan Province, China.**
 
 |  |  |
 |---|---|
@@ -420,7 +420,7 @@ size: 16:9
 ---
 # Round 6 — Movies & TV
 
-**Q7. What was the model of the iconic Nokia sliding phone featured in 1999's The Matrix?**
+**Q7. What was the model of the iconic sliding phone featured in 1999's The Matrix?**
 
 |  |  |
 |---|---|

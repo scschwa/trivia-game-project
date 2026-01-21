@@ -205,17 +205,17 @@ Ditto above - I had never built a socket server before, so this was all new to m
 
 ---
 
-# ⚡ Technical Highlights
+# ⚡ Technical Highlights for Features I Added
 
 1. **Clock Skew Compensation**
    - `serverTime` offset syncs timers across devices
 2. **Reconnection Support**
-   - Unique `reconnectToken` in localStorage
+   - Unique `reconnectToken` in local client storage (cookies)
 3. **Archive vs Delete**
-   - Used configs archived (data integrity)
    - Unused configs deletable
-4. **QR Code Joining**
-   - Easy mobile player onboarding
+   - Used configs archived (was less impactful to database)
+   4. **QR Code Joining**
+   - Easy mobile player onboarding!
 5. **Keyboard Shortcuts**
    - Host controls: Space, P, N, S, L, Esc
 
@@ -236,14 +236,14 @@ TriviaConfig  →  GameSession  →  Team  →  Answer
 
 ---
 
-# 📱 Multi-Device Experience
+<!--- # 📱 Multi-Device Experience
 
 ### Host/Presenter
 - **Host:** Large display with game controls assuming projection.
 - **Players:** PC, Tablet, or Mobile-optimized answer buttons/iinterface.
 - **Scoreboard:** Dedicated final results display.
 
----
+--->
 
 # 🔒 Security Measures
 
@@ -279,12 +279,12 @@ Most of this was up and running in about 2-3 hours from the initial prompt. I sp
 | **Documentation** | 3 | 9% |
 | **Other** | 2 | 6% |
 
-Almost all commits were small and focused, with the majority being performed by Claude Opus 4.5.
+Almost all commits (besides 1st one) were small and focused, with the majority being performed by Claude Opus 4.5.
 
 ---
 # ⏱️ Traditional Development Estimate
 
-How long should this have taken?
+How long should this have taken (according to GPT 5.2)?
 
 | **Component**	| **Junior** | **Mid-Level** | **Senior**
 |----------|--------|-----------|--------|
@@ -307,7 +307,8 @@ How long should this have taken?
 | **Actual time spent** | ~8 hours |
 | **Calendar span** | 5 days |
 | **Lines of code** | ~14,000 |
-| **Lines per hour** | ~1,750 |)
+| **Characters** | 1,801,714 |
+| **Tokens** | 450,428 |
 
 ~10-20x speedup with GHCP and Claude 4.5 Opus AI vs. a Mid-level / Senior Developer.
 
